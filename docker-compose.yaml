@@ -15,3 +15,5 @@ services:
       timeout: 120s
       retries: 15
       start_period: 30s
+    volumes:
+      - .data:/var/lib/mysql:Z
