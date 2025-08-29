@@ -1,0 +1,28 @@
+spring:
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 1000
+        order_inserts: true
+
+  datasource:
+    url: jdbc:mariadb://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:appdb}?autoReconnect=true&useSSL=false
+    username: ${DB_USER:appuser}
+    password: ${DB_PASSWORD:apppwd}
+    driver-class-name: org.mariadb.jdbc.Driver
+
+
+#logging:
+#  level:
+#    org:
+#      hibernate:
+#        SQL: DEBUG
+#        type:
+#          descriptor:
+#            sql:
+#              BasicBinder=TRACE:
