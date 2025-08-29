@@ -42,6 +42,7 @@ public class MetaDataListSync implements CommandLineRunner {
 
         if (metaDataList.isEmpty()) {
             logger.info("MetaDataListSync Job has been completed without any actions");
+            System.exit(0);
             return;
         }
 
@@ -50,5 +51,6 @@ public class MetaDataListSync implements CommandLineRunner {
         logger.info("Created " + metaDataList.size() + " item(s).");
 
         logger.info("MetaDataListSync Job has been completed");
+        System.exit(0);
     }
 }

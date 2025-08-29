@@ -14,7 +14,10 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 @ConditionalOnProperty(name = "task", havingValue = "HistoricalDataListSync")
@@ -34,25 +37,36 @@ public class HistoricalDataListSync implements CommandLineRunner {
     public void run(String... args) throws Exception {
         logger.info("Starting HistoricalDataListSync job");
 
-//        LocalDate valueDate = LocalDate.now();
-        LocalDate valueDate = LocalDate.parse("2025-08-29", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        LocalDate valueDate = LocalDate.now();
 
-        ServiceResponse<List<ExternalHistoricalData>> externalHistoricalDataList = historicalDataService.retrieveList(valueDate);
+        ServiceResponse<List<ExternalHistoricalData>> providerResponse = historicalDataService.retrieveList(valueDate);
+
+        List<ExternalHistoricalData> externalHistoricalData;
+        try {
+            externalHistoricalData = providerResponse.getData().orElseThrow(() -> new RuntimeException(providerResponse.getError()));
+        } catch (Exception e) {
+            logger.error("Provider data cannot be fetched. Error: " + providerResponse.getError());
+            System.exit(1);
+            return;
+        }
+
         List<Fund> fundsByValueDate = fundStorage.getFundsByValueDate(valueDate);
-        List<String> fundCodes = fundsByValueDate.stream().map(item -> item.getMetaData().getCode()).toList();
+        List<String> synchronizedFunds = fundsByValueDate.stream().map(item -> item.getMetaData().getCode()).toList();
+        Map<String, MetaData> fundsMap = fundStorage.getMetaDataList().stream().collect(Collectors.toMap(MetaData::getCode, Function.identity()));
 
         AtomicReference<Integer> createdCount = new AtomicReference<>(0);
-        externalHistoricalDataList.getData().ifPresent(historicalDataList -> {
-            historicalDataList.forEach(item -> {
-                if (fundCodes.contains(item.getMetaData().getCode())) {
-                    logger.warn("Historical data already exists for the specified value date. MetaData: " + item.getMetaData().getCode());
-                    return;
-                }
-                fundStorage.save(item.getMetaData(), item.toModel());
-                createdCount.set(createdCount.get() + 1);
-            });
-        });
-        logger.info("Created " + createdCount.get() + " item(s).");
+        externalHistoricalData.stream()
+                .filter(item -> !synchronizedFunds.contains(item.getMetaData().getCode()))
+                .collect(Collectors.groupingBy(item -> item.getMetaData().getCode()))
+                .forEach((key, value) -> {
+                    MetaData metaData = fundsMap.get(key);
+                    List<HistoricalData> historicalData = value.stream().map(ExternalHistoricalData::toModel).toList();
+                    fundStorage.saveAll(metaData, historicalData);
+                    createdCount.set(createdCount.get() + 1);
+                });
+
+        logger.info("Created " + createdCount + " item(s) for " + valueDate.toString());
         logger.info("HistoricalDataListSync Job has been completed");
+        System.exit(0);
     }
 }

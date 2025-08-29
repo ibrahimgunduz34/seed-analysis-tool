@@ -59,6 +59,7 @@ public class HistoricalDataListSyncAll implements CommandLineRunner {
         persistBatch(groupedExternalHistoricalData);
 
         logger.info("HistoricalDataListSync Job has been completed");
+        System.exit(0);
     }
 
     private void persistBatch(Map<LocalDate, List<ExternalHistoricalData>> entries) {
