@@ -1,7 +1,8 @@
-package org.seed.fund.service.tefas;
+package org.seed.fund.service;
 
-import org.seed.fund.FundStorage;
-import org.seed.fund.HistoricalDataService;
+import org.seed.fund.service.tefas.HistoricalDataListRequestBuilder;
+import org.seed.fund.service.tefas.HistoricalDataListResponseParser;
+import org.seed.fund.storage.FundStorage;
 import org.seed.fund.model.ExternalHistoricalData;
 import org.seed.fund.model.MetaData;
 import org.seed.fund.model.ServiceResponse;

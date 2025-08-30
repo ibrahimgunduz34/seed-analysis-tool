@@ -9,3 +9,12 @@ spring:
         jdbc:
           batch_size: 50
         order_inserts: true
+  jackson:
+    serialization:
+      indent-output: true
+    date-format: com.fasterxml.jackson.databind.util.StdDateFormat
+    default-property-inclusion: non_null
+    property-naming-strategy: SNAKE_CASE
+  web:
+    resources:
+      add-mappings: false

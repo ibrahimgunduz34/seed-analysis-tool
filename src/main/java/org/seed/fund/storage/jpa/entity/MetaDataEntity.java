@@ -1,4 +1,4 @@
-package org.seed.fund.jpa.entity;
+package org.seed.fund.storage.jpa.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -35,26 +35,4 @@ public class MetaDataEntity {
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
-
-    public static MetaDataEntity fromModel(MetaData model) {
-        return new MetaDataEntity(
-                model.getId(),
-                model.getCode(),
-                model.getName(),
-                model.getFundType(),
-                model.getCurrency().toString(),
-                model.getCreatedAt()
-        );
-    }
-
-    public MetaData toModel() {
-        return new MetaData(
-                id,
-                code,
-                name,
-                fundType,
-                Currency.getInstance(currency),
-                createdAt
-        );
-    }
 }

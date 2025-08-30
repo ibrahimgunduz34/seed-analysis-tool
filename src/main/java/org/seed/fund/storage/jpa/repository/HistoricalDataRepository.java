@@ -1,7 +1,7 @@
-package org.seed.fund.jpa.repository;
+package org.seed.fund.storage.jpa.repository;
 
-import org.seed.fund.jpa.entity.HistoricalDataEntity;
-import org.seed.fund.jpa.entity.MetaDataEntity;
+import org.seed.fund.storage.jpa.entity.HistoricalDataEntity;
+import org.seed.fund.storage.jpa.entity.MetaDataEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,6 +17,9 @@ public interface HistoricalDataRepository extends JpaRepository<HistoricalDataEn
             LocalDate endDate
     );
 
+    // TODO: Refactoring required
+    // As JQL does not support limit, I found the following solution to retrieve the latest price of the specified code.
+    // Find better way to retrieve the last price of the specified fund code
     @Query("SELECT h FROM HistoricalDataEntity h " +
             "JOIN FETCH h.metaData " +
             "WHERE h.metaData.code = :code " +
@@ -27,4 +30,11 @@ public interface HistoricalDataRepository extends JpaRepository<HistoricalDataEn
             "JOIN FETCH h.metaData " +
             "WHERE h.valueDate = :valueDate")
     List<HistoricalDataEntity> findAllByValueDate(@Param("valueDate") LocalDate valueDate);
+
+    @Query("SELECT h FROM HistoricalDataEntity h " +
+            "JOIN FETCH h.metaData " +
+            "WHERE h.metaData.code = :code " +
+            "AND h.valueDate BETWEEN :startDate AND :endDate " +
+            "ORDER BY h.valueDate ASC")
+    List<HistoricalDataEntity> findAllByDateRange(@Param("code") String code, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 }

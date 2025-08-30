@@ -1,9 +1,9 @@
-package org.seed.command;
+package org.seed.fund.command;
 
 
 import jakarta.transaction.Transactional;
-import org.seed.fund.FundStorage;
-import org.seed.fund.HistoricalDataService;
+import org.seed.fund.storage.FundStorage;
+import org.seed.fund.service.HistoricalDataService;
 import org.seed.fund.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

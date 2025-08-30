@@ -1,6 +1,6 @@
-package org.seed.fund.jpa.repository;
+package org.seed.fund.storage.jpa.repository;
 
-import org.seed.fund.jpa.entity.MetaDataEntity;
+import org.seed.fund.storage.jpa.entity.MetaDataEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -1,4 +1,4 @@
-package org.seed.fund.jpa.entity;
+package org.seed.fund.storage.jpa.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -43,29 +43,4 @@ public class HistoricalDataEntity {
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
-
-    public static HistoricalDataEntity fromModel(MetaData metaData, HistoricalData historicalData) {
-        return new HistoricalDataEntity(
-                historicalData.getId(),
-                MetaDataEntity.fromModel(metaData),
-                historicalData.getNumberOfShares(),
-                historicalData.getNumberOfInvestors(),
-                historicalData.getTotalValue(),
-                historicalData.getPrice(),
-                historicalData.getValueDate(),
-                historicalData.getCreatedAt()
-        );
-    }
-
-    public HistoricalData toModel() {
-        return new HistoricalData(
-                id,
-                numberOfShares,
-                numberOfInvestors,
-                totalValue,
-                price,
-                valueDate,
-                createdAt
-        );
-    }
 }

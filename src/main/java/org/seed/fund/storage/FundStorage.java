@@ -1,4 +1,4 @@
-package org.seed.fund;
+package org.seed.fund.storage;
 
 import org.seed.fund.model.Fund;
 import org.seed.fund.model.HistoricalData;
@@ -12,6 +12,7 @@ public interface FundStorage {
     List<MetaData> getMetaDataList();
     List<HistoricalData> getHistoricalDataByDateRange(Fund fund, LocalDate beginDate, LocalDate endDate);
     List<Fund> getFundsByValueDate(LocalDate valueDate);
+    List<HistoricalData> getHistoricalDataByDateRange(String code, LocalDate beginDate, LocalDate endDate);
 
     MetaData save(MetaData metaData);
     void saveAll(List<MetaData> metaDataList);

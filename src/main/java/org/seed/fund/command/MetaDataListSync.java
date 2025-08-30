@@ -1,7 +1,7 @@
-package org.seed.command;
+package org.seed.fund.command;
 
-import org.seed.fund.FundStorage;
-import org.seed.fund.MetaDataService;
+import org.seed.fund.storage.FundStorage;
+import org.seed.fund.service.MetaDataService;
 import org.seed.fund.model.ExternalMetaData;
 import org.seed.fund.model.MetaData;
 import org.slf4j.Logger;
