@@ -1,4 +1,4 @@
-package org.seed.fund.service;
+package org.seed.fund.service.provider;
 
 import org.seed.fund.model.ExternalHistoricalData;
 import org.seed.fund.model.ServiceResponse;

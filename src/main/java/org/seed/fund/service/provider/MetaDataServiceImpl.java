@@ -1,9 +1,9 @@
-package org.seed.fund.service;
+package org.seed.fund.service.provider;
 
 import org.seed.fund.model.ExternalMetaData;
 import org.seed.fund.model.ServiceResponse;
-import org.seed.fund.service.tefas.MetaDataListRequestBuilder;
-import org.seed.fund.service.tefas.MetaDataListResponseParser;
+import org.seed.fund.service.provider.tefas.MetaDataListRequestBuilder;
+import org.seed.fund.service.provider.tefas.MetaDataListResponseParser;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;

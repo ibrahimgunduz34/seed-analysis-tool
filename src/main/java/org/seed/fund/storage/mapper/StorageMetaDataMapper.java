@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.Currency;
 
 @Component
-public class MetaDataMapper {
+public class StorageMetaDataMapper {
     public MetaDataEntity toEntity(MetaData model) {
         return new MetaDataEntity(
                 model.getId(),

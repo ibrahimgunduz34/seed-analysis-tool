@@ -1,4 +1,4 @@
-package org.seed.fund.service.tefas;
+package org.seed.fund.service.provider.tefas;
 
 import com.google.gson.*;
 import org.seed.fund.model.ExternalHistoricalData;
@@ -8,7 +8,6 @@ import java.lang.reflect.Type;
 import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;

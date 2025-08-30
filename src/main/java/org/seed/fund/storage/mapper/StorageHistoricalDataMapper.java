@@ -1,16 +1,15 @@
 package org.seed.fund.storage.mapper;
 
 import org.seed.fund.storage.jpa.entity.HistoricalDataEntity;
-import org.seed.fund.storage.jpa.entity.MetaDataEntity;
 import org.seed.fund.model.HistoricalData;
 import org.seed.fund.model.MetaData;
 import org.springframework.stereotype.Component;
 
 @Component
-public class HistoricalDataMapper {
-    private final MetaDataMapper metaDataMapper;;
+public class StorageHistoricalDataMapper {
+    private final StorageMetaDataMapper metaDataMapper;;
 
-    public HistoricalDataMapper(MetaDataMapper metaDataMapper) {
+    public StorageHistoricalDataMapper(StorageMetaDataMapper metaDataMapper) {
         this.metaDataMapper = metaDataMapper;
     }
 

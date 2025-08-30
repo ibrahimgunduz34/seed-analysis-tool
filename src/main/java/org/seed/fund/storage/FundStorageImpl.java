@@ -10,8 +10,8 @@ import org.seed.fund.storage.jpa.repository.MetaDataRepository;
 import org.seed.fund.model.Fund;
 import org.seed.fund.model.HistoricalData;
 import org.seed.fund.model.MetaData;
-import org.seed.fund.storage.mapper.HistoricalDataMapper;
-import org.seed.fund.storage.mapper.MetaDataMapper;
+import org.seed.fund.storage.mapper.StorageHistoricalDataMapper;
+import org.seed.fund.storage.mapper.StorageMetaDataMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
@@ -22,11 +22,11 @@ import java.util.List;
 public class FundStorageImpl implements FundStorage {
     private final MetaDataRepository metaDataRepository;
     private final HistoricalDataRepository historicalDataRepository;
-    private final MetaDataMapper metaDataMapper;
-    private final HistoricalDataMapper historicalDataMapper;
+    private final StorageMetaDataMapper metaDataMapper;
+    private final StorageHistoricalDataMapper historicalDataMapper;
     private final FundMapper fundMapper;
 
-    public FundStorageImpl(MetaDataRepository metaDataRepository, HistoricalDataRepository historicalDataRepository, MetaDataMapper metaDataMapper, HistoricalDataMapper historicalDataMapper, FundMapper fundMapper) {
+    public FundStorageImpl(MetaDataRepository metaDataRepository, HistoricalDataRepository historicalDataRepository, StorageMetaDataMapper metaDataMapper, StorageHistoricalDataMapper historicalDataMapper, FundMapper fundMapper) {
         this.metaDataRepository = metaDataRepository;
         this.historicalDataRepository = historicalDataRepository;
         this.metaDataMapper = metaDataMapper;

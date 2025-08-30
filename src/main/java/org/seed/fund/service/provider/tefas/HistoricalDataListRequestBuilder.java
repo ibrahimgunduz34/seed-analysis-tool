@@ -1,4 +1,4 @@
-package org.seed.fund.service.tefas;
+package org.seed.fund.service.provider.tefas;
 
 import org.springframework.stereotype.Component;
 
@@ -7,27 +7,28 @@ import java.net.URLEncoder;
 import java.net.http.HttpRequest;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class MetaDataListRequestBuilder {
-    private static final String SERVICE_URL = "https://www.tefas.gov.tr/api/DB/BindComparisonFundReturns";
+public class HistoricalDataListRequestBuilder {
+    private static final String SERVICE_URL = "https://www.tefas.gov.tr/api/DB/BindHistoryInfo";
     private static final Long CONNECTION_TIMEOUT = 30_000L;
 
-    public HttpRequest buildRequest() {
+    public HttpRequest buildRequest(LocalDate valueDate) {
+        String formattedValueDate = valueDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+
         Map<String, String> formData = new HashMap<>() {{
-            put("calismatipi", "2");
             put("fontip", "YAT");
             put("sfontur", "");
-            put("kurucukod", "" );
+            put("fonkod", "");
             put("fongrup", "");
-            put("bastarih", "Başlangıç");
-            put("bittarih", "Bitiş");
+            put("bastarih", formattedValueDate);
+            put("bittarih", formattedValueDate);
             put("fonturkod", "");
             put("fonunvantip", "");
-            put("strperiod", "1,1,1,1,1,1,1");
-            put("islemdurum", ""); // Tum Fonlar (Tefas'da islem gorenler ve digerleri)
         }};
 
         return HttpRequest.newBuilder()
@@ -60,4 +61,6 @@ public class MetaDataListRequestBuilder {
         }
         return formBodyBuilder.toString();
     }
+
+
 }

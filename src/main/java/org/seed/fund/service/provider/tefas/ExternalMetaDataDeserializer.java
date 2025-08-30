@@ -1,4 +1,4 @@
-package org.seed.fund.service.tefas;
+package org.seed.fund.service.provider.tefas;
 
 import com.google.gson.*;
 import org.seed.fund.model.ExternalMetaData;

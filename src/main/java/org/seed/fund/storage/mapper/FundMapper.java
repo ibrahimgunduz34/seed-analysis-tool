@@ -6,10 +6,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class FundMapper {
-    private final MetaDataMapper metaDataMapper;
-    private final HistoricalDataMapper historicalDataMapper;
+    private final StorageMetaDataMapper metaDataMapper;
+    private final StorageHistoricalDataMapper historicalDataMapper;
 
-    public FundMapper(MetaDataMapper metaDataMapper, HistoricalDataMapper historicalDataMapper) {
+    public FundMapper(StorageMetaDataMapper metaDataMapper, StorageHistoricalDataMapper historicalDataMapper) {
         this.metaDataMapper = metaDataMapper;
         this.historicalDataMapper = historicalDataMapper;
     }
