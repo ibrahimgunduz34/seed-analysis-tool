@@ -15,8 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 @Component
@@ -26,8 +28,8 @@ public class HistoricalDataSynchronizerImpl implements HistoricalDataSynchronize
     private final HistoricalDataService historicalDataService;
     private final HistoricalDataPersistence historicalDataPersistence;
 
-    private static final Integer FETCH_POOL_SIZE=8;
-    private static final Integer PERSISTENCE_POOL_SIZE=4;
+    private static final Integer FETCH_POOL_SIZE = 4;
+    private static final Integer PERSISTENCE_POOL_SIZE = 4;
 
     public HistoricalDataSynchronizerImpl(HistoricalDataService historicalDataService, HistoricalDataPersistence historicalDataPersistence) {
         this.historicalDataService = historicalDataService;
@@ -67,29 +69,52 @@ public class HistoricalDataSynchronizerImpl implements HistoricalDataSynchronize
         try {
             List<CompletableFuture<List<ExternalHistoricalData>>> futures = new ArrayList<>();
 
-            for (LocalDate valueDate = beginDate; valueDate.isAfter(endDate); valueDate = valueDate.plusDays(1)) {
+            for (LocalDate valueDate = beginDate; !valueDate.isAfter(endDate); valueDate = valueDate.plusDays(1)) {
                 final LocalDate requestDate = valueDate;
 
-                futures.add(
-                        CompletableFuture.supplyAsync(() -> fetchData(requestDate), executor)
-                                .whenComplete((items, ex) -> {
-                                    if (ex != null) {
-                                        logger.error("Failed to fetch historical data for {}", requestDate, ex);
-                                    } else {
-                                        logger.info("Collected {} item(s) for {}", items.size(), requestDate);
-                                    }
-                                })
-                );
+                CompletableFuture<List<ExternalHistoricalData>> feture = CompletableFuture
+                        .supplyAsync(() -> {
+                            try {
+                                Thread.sleep(500); // 500ms delay before calling fetchData
+                            } catch (InterruptedException e) {
+                                Thread.currentThread().interrupt();
+                            };
+                            return fetchData(requestDate);
+                        }, executor)
+                        .handle(handleBatchProviderResponse(requestDate));
+
+                futures.add(feture);
             }
 
+            // join all futures and flatten successful results
             return futures.stream()
-                    .map(CompletableFuture::join)   // join waits and rethrows unchecked exceptions
-                    .flatMap(List::stream)          // flatten lists into a single stream
-                    .toList();                      // Java 16+, otherwise collect(Collectors.toList())
+                    .map(CompletableFuture::join) // now never throws
+                    .flatMap(List::stream)
+                    .toList();
 
         } finally {
             executor.shutdown();
         }
+    }
+
+    private BiFunction<List<ExternalHistoricalData>, Throwable, List<ExternalHistoricalData>> handleBatchProviderResponse(LocalDate requestDate) {
+        return (items, ex) -> {
+            if (ex != null) {
+                // unwrap CompletionException to get the real cause
+                Throwable cause = ex instanceof CompletionException ? ex.getCause() : ex;
+
+                if (cause instanceof ExternalServiceConnectionFailure) {
+                    logger.error("Failed to fetch historical data for {}: {}", requestDate, cause.getMessage());
+                } else {
+                    logger.error("Unexpected error fetching historical data for {}: {}", requestDate, cause.toString());
+                }
+                // return empty list for this failed call
+                return List.<ExternalHistoricalData>of();
+            } else {
+                logger.info("Collected {} item(s) for {}", items.size(), requestDate);
+                return items;
+            }
+        };
     }
 
 
