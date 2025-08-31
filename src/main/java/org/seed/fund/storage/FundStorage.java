@@ -10,7 +10,6 @@ import java.util.List;
 public interface FundStorage {
     Fund getFundByCode(String code);
     List<MetaData> getMetaDataList();
-    List<HistoricalData> getHistoricalDataByDateRange(Fund fund, LocalDate beginDate, LocalDate endDate);
     List<Fund> getFundsByValueDate(LocalDate valueDate);
     List<HistoricalData> getHistoricalDataByDateRange(String code, LocalDate beginDate, LocalDate endDate);
 

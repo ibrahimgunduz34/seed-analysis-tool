@@ -57,14 +57,6 @@ public class FundStorageImpl implements FundStorage {
                 .toList();
     }
 
-    public List<HistoricalData> getHistoricalDataByDateRange(Fund fund, LocalDate beginDate, LocalDate endDate) {
-        MetaDataEntity metaDataEntity = metaDataMapper.toEntity(fund.getMetaData());
-        return historicalDataRepository.findAllByMetaDataAndValueDateBetween(metaDataEntity, beginDate, endDate)
-                .stream()
-                .map(historicalDataMapper::toModel)
-                .toList();
-    }
-
     public List<Fund> getFundsByValueDate(LocalDate valueDate) {
         return historicalDataRepository.findAllByValueDate(valueDate)
                 .stream()
