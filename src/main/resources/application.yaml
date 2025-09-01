@@ -18,3 +18,8 @@ spring:
   web:
     resources:
       add-mappings: false
+
+
+logging.level.root: WARN
+logging.level.org.springframework.web: DEBUG
+logging.level.org.hibernate: ERROR

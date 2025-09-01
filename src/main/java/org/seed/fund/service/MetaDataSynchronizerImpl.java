@@ -1,10 +1,9 @@
 package org.seed.fund.service;
 
-import org.seed.fund.command.MetaDataListSync;
+import org.seed.fund.mapper.MetaDataMapper;
 import org.seed.fund.model.ExternalMetaData;
 import org.seed.fund.model.MetaData;
 import org.seed.fund.service.provider.MetaDataService;
-import org.seed.fund.service.provider.mapper.ProviderMetaDataMapper;
 import org.seed.fund.storage.FundStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,9 +17,9 @@ public class MetaDataSynchronizerImpl implements MetaDataSynchronizer {
 
     private final MetaDataService metaDataService;
     private final FundStorage fundStorage;
-    private final ProviderMetaDataMapper metaDataMapper;
+    private final MetaDataMapper metaDataMapper;
 
-    public MetaDataSynchronizerImpl(MetaDataService metaDataService, FundStorage fundStorage, ProviderMetaDataMapper metaDataMapper) {
+    public MetaDataSynchronizerImpl(MetaDataService metaDataService, FundStorage fundStorage, MetaDataMapper metaDataMapper) {
         this.metaDataService = metaDataService;
         this.fundStorage = fundStorage;
         this.metaDataMapper = metaDataMapper;

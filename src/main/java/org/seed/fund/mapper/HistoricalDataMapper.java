@@ -1,15 +1,16 @@
-package org.seed.fund.storage.mapper;
+package org.seed.fund.mapper;
 
+import org.seed.fund.model.ExternalHistoricalData;
 import org.seed.fund.storage.jpa.entity.HistoricalDataEntity;
 import org.seed.fund.model.HistoricalData;
 import org.seed.fund.model.MetaData;
 import org.springframework.stereotype.Component;
 
 @Component
-public class StorageHistoricalDataMapper {
-    private final StorageMetaDataMapper metaDataMapper;;
+public class HistoricalDataMapper {
+    private final MetaDataMapper metaDataMapper;;
 
-    public StorageHistoricalDataMapper(StorageMetaDataMapper metaDataMapper) {
+    public HistoricalDataMapper(MetaDataMapper metaDataMapper) {
         this.metaDataMapper = metaDataMapper;
     }
 
@@ -22,6 +23,16 @@ public class StorageHistoricalDataMapper {
                 historicalDataEntity.getPrice(),
                 historicalDataEntity.getValueDate(),
                 historicalDataEntity.getCreatedAt()
+        );
+    }
+
+    public HistoricalData toModel(ExternalHistoricalData externalHistoricalData) {
+        return HistoricalData.create(
+                externalHistoricalData.getNumberOfShares(),
+                externalHistoricalData.getNumberOfInvestors(),
+                externalHistoricalData.getTotalValue(),
+                externalHistoricalData.getPrice(),
+                externalHistoricalData.getValueDate()
         );
     }
 

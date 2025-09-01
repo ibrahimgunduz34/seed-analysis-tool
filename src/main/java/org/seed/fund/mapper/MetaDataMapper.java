@@ -1,5 +1,6 @@
-package org.seed.fund.storage.mapper;
+package org.seed.fund.mapper;
 
+import org.seed.fund.model.ExternalMetaData;
 import org.seed.fund.model.MetaData;
 import org.seed.fund.storage.jpa.entity.MetaDataEntity;
 import org.springframework.stereotype.Component;
@@ -7,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.Currency;
 
 @Component
-public class StorageMetaDataMapper {
+public class MetaDataMapper {
     public MetaDataEntity toEntity(MetaData model) {
         return new MetaDataEntity(
                 model.getId(),
@@ -27,6 +28,15 @@ public class StorageMetaDataMapper {
                 entity.getFundType(),
                 Currency.getInstance(entity.getCurrency()),
                 entity.getCreatedAt()
+        );
+    }
+
+    public MetaData toModel(ExternalMetaData externalMetaData) {
+        return MetaData.create(
+                externalMetaData.getCode(),
+                externalMetaData.getName(),
+                externalMetaData.getFundType(),
+                externalMetaData.getCurrency()
         );
     }
 }

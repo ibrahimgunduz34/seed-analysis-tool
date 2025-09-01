@@ -28,7 +28,7 @@ public class HistoricalDataSynchronizerImpl implements HistoricalDataSynchronize
     private final HistoricalDataService historicalDataService;
     private final HistoricalDataPersistence historicalDataPersistence;
 
-    private static final Integer FETCH_POOL_SIZE = 4;
+    private static final Integer FETCH_POOL_SIZE = 8;
     private static final Integer PERSISTENCE_POOL_SIZE = 4;
 
     public HistoricalDataSynchronizerImpl(HistoricalDataService historicalDataService, HistoricalDataPersistence historicalDataPersistence) {
@@ -72,10 +72,10 @@ public class HistoricalDataSynchronizerImpl implements HistoricalDataSynchronize
             for (LocalDate valueDate = beginDate; !valueDate.isAfter(endDate); valueDate = valueDate.plusDays(1)) {
                 final LocalDate requestDate = valueDate;
 
-                CompletableFuture<List<ExternalHistoricalData>> feture = CompletableFuture
+                CompletableFuture<List<ExternalHistoricalData>> future = CompletableFuture
                         .supplyAsync(() -> {
                             try {
-                                Thread.sleep(500); // 500ms delay before calling fetchData
+                                Thread.sleep(800); // 500ms delay before calling fetchData
                             } catch (InterruptedException e) {
                                 Thread.currentThread().interrupt();
                             };
@@ -83,7 +83,7 @@ public class HistoricalDataSynchronizerImpl implements HistoricalDataSynchronize
                         }, executor)
                         .handle(handleBatchProviderResponse(requestDate));
 
-                futures.add(feture);
+                futures.add(future);
             }
 
             // join all futures and flatten successful results

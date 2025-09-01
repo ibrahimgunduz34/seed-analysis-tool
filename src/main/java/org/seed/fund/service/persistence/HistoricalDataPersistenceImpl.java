@@ -1,10 +1,10 @@
 package org.seed.fund.service.persistence;
 
+import org.seed.fund.mapper.HistoricalDataMapper;
 import org.seed.fund.model.ExternalHistoricalData;
 import org.seed.fund.model.Fund;
 import org.seed.fund.model.HistoricalData;
 import org.seed.fund.model.MetaData;
-import org.seed.fund.service.provider.mapper.ProviderHistoricalDataMapper;
 import org.seed.fund.storage.FundStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +23,9 @@ public class HistoricalDataPersistenceImpl implements HistoricalDataPersistence 
     private final Logger logger = LoggerFactory.getLogger(HistoricalDataPersistenceImpl.class);
 
     private final FundStorage fundStorage;
-    private final ProviderHistoricalDataMapper historicalDataMapper;
+    private final HistoricalDataMapper historicalDataMapper;
 
-    public HistoricalDataPersistenceImpl(FundStorage fundStorage, ProviderHistoricalDataMapper historicalDataMapper) {
+    public HistoricalDataPersistenceImpl(FundStorage fundStorage, HistoricalDataMapper historicalDataMapper) {
         this.fundStorage = fundStorage;
         this.historicalDataMapper = historicalDataMapper;
     }
