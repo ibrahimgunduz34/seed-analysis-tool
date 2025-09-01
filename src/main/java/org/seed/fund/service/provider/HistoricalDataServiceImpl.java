@@ -1,11 +1,11 @@
 package org.seed.fund.service.provider;
 
-import org.seed.fund.service.provider.tefas.HistoricalDataListRequestBuilder;
-import org.seed.fund.service.provider.tefas.HistoricalDataListResponseParser;
-import org.seed.fund.storage.FundStorage;
 import org.seed.fund.model.ExternalHistoricalData;
 import org.seed.fund.model.MetaData;
 import org.seed.fund.model.ServiceResponse;
+import org.seed.fund.service.provider.tefas.HistoricalDataListRequestBuilder;
+import org.seed.fund.service.provider.tefas.HistoricalDataListResponseParser;
+import org.seed.fund.storage.FundStorage;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;

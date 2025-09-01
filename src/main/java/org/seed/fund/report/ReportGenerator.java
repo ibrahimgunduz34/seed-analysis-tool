@@ -1,11 +1,11 @@
 package org.seed.fund.report;
 
-import org.seed.util.TablePrinter;
 import org.seed.fund.model.Fund;
 import org.seed.fund.model.HistoricalData;
 import org.seed.fund.report.calculator.*;
 import org.seed.fund.report.model.ReportContext;
 import org.seed.fund.storage.FundStorage;
+import org.seed.util.TablePrinter;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;

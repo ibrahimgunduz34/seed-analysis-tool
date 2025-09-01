@@ -1,7 +1,6 @@
 package org.seed.fund.command;
 
 
-import jakarta.transaction.Transactional;
 import org.seed.fund.service.HistoricalDataSynchronizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +22,6 @@ public class HistoricalDataListSync implements CommandLineRunner {
     }
 
     @Override
-    @Transactional
     public void run(String... args) throws Exception {
         logger.info("Starting HistoricalDataListSync job");
 

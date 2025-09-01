@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -42,16 +41,14 @@ public class HistoricalDataPersistenceImpl implements HistoricalDataPersistence 
         Map<String, MetaData> fundsMap = fundStorage.getMetaDataList().stream()
                 .collect(Collectors.toMap(MetaData::getCode, Function.identity()));
 
-        AtomicReference<Integer> createdCount = new AtomicReference<>(0);
-        externalHistoricalData.stream()
+        Map<String, List<HistoricalData>> groupedHistoricalData = externalHistoricalData.stream()
                 .filter(item -> !synchronizedFunds.contains(item.getMetaData().getCode()))
-                .collect(Collectors.groupingBy(item -> item.getMetaData().getCode()))
-                .forEach((key, value) -> {
-                    MetaData metaData = fundsMap.get(key);
-                    List<HistoricalData> historicalData = value.stream().map(historicalDataMapper::toModel).toList();
-                    fundStorage.saveAll(metaData, historicalData);
-                    createdCount.set(createdCount.get() + 1);
-                });
+                .collect(Collectors.groupingBy(
+                        item -> item.getMetaData().getCode(),
+                        Collectors.mapping(historicalDataMapper::toModel, Collectors.toList())
+                ));
+
+        int createdCount = fundStorage.saveAll(groupedHistoricalData).size();
 
         logger.info("Created " + createdCount + " item(s) for " + valueDate.toString());
     }

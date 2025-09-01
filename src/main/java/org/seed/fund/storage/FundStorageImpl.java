@@ -3,20 +3,23 @@ package org.seed.fund.storage;
 import jakarta.transaction.Transactional;
 import org.seed.exception.NotFoundException;
 import org.seed.fund.mapper.FundMapper;
+import org.seed.fund.mapper.HistoricalDataMapper;
+import org.seed.fund.mapper.MetaDataMapper;
+import org.seed.fund.model.Fund;
+import org.seed.fund.model.HistoricalData;
+import org.seed.fund.model.MetaData;
 import org.seed.fund.storage.jpa.entity.HistoricalDataEntity;
 import org.seed.fund.storage.jpa.entity.MetaDataEntity;
 import org.seed.fund.storage.jpa.repository.HistoricalDataRepository;
 import org.seed.fund.storage.jpa.repository.MetaDataRepository;
-import org.seed.fund.model.Fund;
-import org.seed.fund.model.HistoricalData;
-import org.seed.fund.model.MetaData;
-import org.seed.fund.mapper.HistoricalDataMapper;
-import org.seed.fund.mapper.MetaDataMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 public class FundStorageImpl implements FundStorage {
@@ -95,14 +98,20 @@ public class FundStorageImpl implements FundStorage {
         return historicalDataMapper.toModel(entity);
     }
 
-    @Transactional
     @Override
-    public void saveAll(MetaData metaData, List<HistoricalData> historicalDataList) {
-        List<HistoricalDataEntity> entities = historicalDataList.stream()
-                .map(item -> historicalDataMapper.toEntity(metaData, item))
+    public List<HistoricalData> saveAll(Map<String, List<HistoricalData>> models) {
+        Map<String, MetaData> metaDataMap = getMetaDataList().stream()
+                .collect(Collectors.toMap(MetaData::getCode, Function.identity()));
+
+        List<HistoricalDataEntity> entities = models.entrySet().stream()
+                .flatMap(
+                        entry -> entry.getValue().stream()
+                                .map(item -> historicalDataMapper.toEntity(metaDataMap.get(entry.getKey()), item))
+                )
                 .toList();
 
-        historicalDataRepository.saveAll(entities);
+
+        return historicalDataMapper.toModel(historicalDataRepository.saveAll(entities));
     }
 
 }

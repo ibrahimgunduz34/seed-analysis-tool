@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.seed.fund.model.HistoricalData;
-import org.seed.fund.model.MetaData;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

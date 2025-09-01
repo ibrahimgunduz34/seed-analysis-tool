@@ -6,6 +6,7 @@ import org.seed.fund.model.MetaData;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public interface FundStorage {
     Fund getFundByCode(String code);
@@ -17,5 +18,6 @@ public interface FundStorage {
     void saveAll(List<MetaData> metaDataList);
 
     HistoricalData save(MetaData metaData, HistoricalData historicalData);
-    void saveAll(MetaData metaData, List<HistoricalData> historicalDataList);
+//    void saveAll(MetaData metaData, List<HistoricalData> historicalDataList);
+    List<HistoricalData> saveAll(Map<String, List<HistoricalData>> models);
 }

@@ -2,6 +2,7 @@ spring:
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MariaDBDialect
+    defer-datasource-initialization: false
     hibernate:
       ddl-auto: update
     properties:
@@ -16,6 +17,16 @@ spring:
     password: ${DB_PASSWORD:apppwd}
     driver-class-name: org.mariadb.jdbc.Driver
 
+#logging:
+#  level:
+#    org.hibernate.SQL: DEBUG
+#    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+#logging:
+#  level:
+#    org.springframework.transaction: TRACE
+#    org.hibernate.SQL: DEBUG
+#    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
 #logging:
 #  level:

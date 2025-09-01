@@ -4,10 +4,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.seed.fund.model.MetaData;
 
 import java.time.LocalDateTime;
-import java.util.Currency;
 
 @Entity
 @Table(name = "fund_meta_data", indexes = {

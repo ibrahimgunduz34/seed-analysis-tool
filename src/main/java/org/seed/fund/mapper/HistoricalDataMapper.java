@@ -1,10 +1,12 @@
 package org.seed.fund.mapper;
 
 import org.seed.fund.model.ExternalHistoricalData;
-import org.seed.fund.storage.jpa.entity.HistoricalDataEntity;
 import org.seed.fund.model.HistoricalData;
 import org.seed.fund.model.MetaData;
+import org.seed.fund.storage.jpa.entity.HistoricalDataEntity;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class HistoricalDataMapper {
@@ -24,6 +26,10 @@ public class HistoricalDataMapper {
                 historicalDataEntity.getValueDate(),
                 historicalDataEntity.getCreatedAt()
         );
+    }
+
+    public List<HistoricalData> toModel(List<HistoricalDataEntity> entities) {
+        return entities.stream().map(this::toModel).toList();
     }
 
     public HistoricalData toModel(ExternalHistoricalData externalHistoricalData) {

@@ -1,7 +1,6 @@
 package org.seed.fund.report.calculator;
 
 import org.seed.fund.model.HistoricalData;
-import org.seed.fund.report.ReportGenerator;
 import org.seed.fund.report.model.ReportContext;
 
 import java.math.BigDecimal;
