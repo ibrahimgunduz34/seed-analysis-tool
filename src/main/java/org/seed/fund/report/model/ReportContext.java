@@ -29,6 +29,7 @@ public class ReportContext {
     private BigDecimal averageLoss;
     private BigDecimal sharpeRatio;
     private String evaluationSummary;
+    ;private BigDecimal maxDrawdown;
 
     public ReportContext(MetaData metaData, List<HistoricalData> historicalDataList, LocalDate beginDate, LocalDate endDate) {
         this.metaData = metaData;

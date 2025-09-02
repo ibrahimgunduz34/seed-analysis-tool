@@ -35,7 +35,12 @@ public class ReportGenerator {
         System.out.printf("Start date: %s%n", beginDate);
         System.out.printf("End date: %s%n", endDate);
 
+        String summary = new SummaryReportCalculator().apply(contexts);
+
         TablePrinter.print(contexts);
+
+        System.out.println("\n");
+        System.out.println(summary);
     }
 
     private ReportContext calculateReportContext(
@@ -56,6 +61,7 @@ public class ReportGenerator {
                 .andThen(new StandardDeviationCalculator())
                 .andThen(new PriceChangeCalculator())
                 .andThen(new SharpeRatioCalculator())
+                .andThen(new MaxDrawdownCalculator())
                 .andThen(new FundEvaluationCalculator());
 
         return pipeline.apply(ctx);

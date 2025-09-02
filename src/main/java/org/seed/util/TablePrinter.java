@@ -14,6 +14,7 @@ public class TablePrinter {
             "Daily stdev (%)",
             "Periodic stdev (%)",
             "Price Change (%)",
+            "Max Drawdown (%)",
             "Sharpe Ratio"
     };
 
@@ -48,6 +49,7 @@ public class TablePrinter {
                     "%.2f".formatted(BigDecimalMath.convertToPercentage(ctx.getDailyStandardDeviation())),
                     "%.2f".formatted(BigDecimalMath.convertToPercentage(ctx.getStandardDeviation())),
                     "%.2f".formatted(BigDecimalMath.convertToPercentage(ctx.getPriceChange())),
+                    "%.2f".formatted(BigDecimalMath.convertToPercentage(ctx.getMaxDrawdown())),
                     "%.2f".formatted(ctx.getSharpeRatio())
                     );
         }
