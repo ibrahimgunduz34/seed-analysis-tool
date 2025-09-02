@@ -7,8 +7,8 @@ import java.util.List;
 public class TablePrinter {
     private static final String[] headers = {
             "Fon",
-            "Negative Days",
             "Positive Days",
+            "Negative Days",
             "Average Gain (%)",
             "Average Loss (%)",
             "Daily stdev (%)",
@@ -21,7 +21,10 @@ public class TablePrinter {
         printHeaders();
         printRows(contexts);
         System.out.println("\n");
+        printComments(contexts);
+        System.out.println("\n");
         printNotes();
+
     }
 
     private static void printHeaders() {
@@ -60,5 +63,11 @@ public class TablePrinter {
                 "* 1.0–2.0 → Kabul edilebilir, yatırım yapılabilir\n" +
                 "* 0–1.0 → Getiri var ama riskine göre düşük\n" +
                 "* <0 → Riskten arındırıldığında zarar");
+    }
+
+    private static void printComments(List<ReportContext> contexts) {
+        contexts.forEach(context -> {
+            System.out.printf("%s: %s%n", context.getMetaData().getCode(), context.getEvaluationSummary());
+        });
     }
 }

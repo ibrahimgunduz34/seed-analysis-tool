@@ -9,33 +9,35 @@ import java.util.List;
 import java.util.function.Function;
 
 public class SharpeRatioCalculator implements Function<ReportContext, ReportContext> {
+
+    private static final int ANNUAL_TRADING_DAYS = 252; // Yıllık iş günü sayısı
+
     @Override
     public ReportContext apply(ReportContext ctx) {
-        List<BigDecimal> changes = ctx.getDailyChanges();
+        List<BigDecimal> dailyChanges = ctx.getDailyChanges();
+        if (dailyChanges == null || dailyChanges.isEmpty()) {
+            ctx.setSharpeRatio(BigDecimal.ZERO);
+            return ctx;
+        }
 
-        BigDecimal mean = changes.stream()
+        // Günlük ortalama getiri
+        BigDecimal meanDaily = dailyChanges.stream()
                 .reduce(BigDecimal.ZERO, BigDecimal::add)
-                .divide(BigDecimal.valueOf(changes.size()), 10, RoundingMode.HALF_UP);
+                .divide(BigDecimal.valueOf(dailyChanges.size()), 10, RoundingMode.HALF_UP);
 
-        int annualWorkDays = 252;
+        // Günlük standart sapma (önceden hesaplanmış)
+        BigDecimal dailyStDev = ctx.getDailyStandardDeviation();
+        if (dailyStDev == null || dailyStDev.compareTo(BigDecimal.ZERO) == 0) {
+            ctx.setSharpeRatio(BigDecimal.ZERO);
+            return ctx;
+        }
 
-        BigDecimal annualChange = mean.multiply(BigDecimal.valueOf(annualWorkDays));
+        // Yıllık Sharpe: mean / std * sqrt(252)
+        BigDecimal sharpeAnnual = meanDaily
+                .divide(dailyStDev, 10, RoundingMode.HALF_UP)
+                .multiply(BigDecimalMath.sqrt(BigDecimal.valueOf(ANNUAL_TRADING_DAYS), 10));
 
-        BigDecimal annualStDev = ctx.getDailyStandardDeviation().multiply(
-                BigDecimalMath.sqrt(
-                        BigDecimal.valueOf(annualWorkDays),
-                        10
-                )
-        );
-
-        BigDecimal sharpeRatio = annualChange.divide(
-                annualStDev,
-                10,
-                RoundingMode.HALF_UP
-        );
-
-        ctx.setSharpeRatio(sharpeRatio);
-
+        ctx.setSharpeRatio(sharpeAnnual);
         return ctx;
     }
 }

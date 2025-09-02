@@ -24,9 +24,15 @@ public class GenerateReport implements CommandLineRunner {
         List<String> codes = List.of(
                 "BDS",
                 "MAC",
-                "NRC"
+                "NRC",
+                "KHA",
+                "PPH",
+                "DTL",
+                "KHC",
+                "KVT",
+                "GNS"
         );
-        LocalDate beginDate = LocalDate.parse("2025-01-03", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        LocalDate beginDate = LocalDate.parse("2025-08-05", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         LocalDate endDate = LocalDate.parse("2025-08-29", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         BigDecimal initialAmount = BigDecimal.valueOf(10_000);
         Integer frequency = 30;

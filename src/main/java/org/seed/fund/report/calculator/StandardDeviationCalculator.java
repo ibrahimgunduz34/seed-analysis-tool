@@ -15,6 +15,12 @@ public class StandardDeviationCalculator implements Function<ReportContext, Repo
 
         int n = ctx.getDailyChanges().size();
 
+        if (n <= 1) {
+            ctx.setDailyStandardDeviation(BigDecimal.ZERO);
+            ctx.setStandardDeviation(BigDecimal.ZERO);
+            return ctx;
+        }
+
         BigDecimal mean = total.divide(
                 BigDecimal.valueOf(n),
                 10,

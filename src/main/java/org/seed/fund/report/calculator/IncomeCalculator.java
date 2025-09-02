@@ -16,8 +16,9 @@ public class IncomeCalculator implements Function<ReportContext, ReportContext> 
         Map<Boolean, Long> result = dailyChanges.stream()
                 .collect(Collectors.groupingBy(c -> c.signum() > 0, Collectors.counting()));
 
-        ctx.setPositiveIncome(result.get(true));
-        ctx.setNegativeIncome(result.get(false));
+        ctx.setPositiveIncome(result.getOrDefault(true, 0L));
+        ctx.setNegativeIncome(result.getOrDefault(false, 0L));
+
 
         return ctx;
     }

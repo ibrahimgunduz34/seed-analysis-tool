@@ -32,6 +32,9 @@ public class ReportGenerator {
                 .map(code -> calculateReportContext(code, beginDate, endDate, initialAmount, frequency))
                 .toList();
 
+        System.out.printf("Start date: %s%n", beginDate);
+        System.out.printf("End date: %s%n", endDate);
+
         TablePrinter.print(contexts);
     }
 
@@ -45,14 +48,15 @@ public class ReportGenerator {
         Fund fund = fundStorage.getFundByCode(code);
         List<HistoricalData> historicalDataList = fundStorage.getHistoricalDataByDateRange(fund.getMetaData().getCode(), beginDate, endDate);
 
-        ReportContext ctx = new ReportContext(fund.getMetaData(), historicalDataList);
+        ReportContext ctx = new ReportContext(fund.getMetaData(), historicalDataList, beginDate, endDate);
 
         Function<ReportContext, ReportContext> pipeline = new DailyChangeCalculator()
                 .andThen(new IncomeCalculator())
                 .andThen(new IncomePerformanceCalculator())
                 .andThen(new StandardDeviationCalculator())
                 .andThen(new PriceChangeCalculator())
-                .andThen(new SharpeRatioCalculator());
+                .andThen(new SharpeRatioCalculator())
+                .andThen(new FundEvaluationCalculator());
 
         return pipeline.apply(ctx);
     }

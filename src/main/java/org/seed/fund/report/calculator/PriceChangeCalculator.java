@@ -20,9 +20,11 @@ public class PriceChangeCalculator implements Function<ReportContext,  ReportCon
                 : historicalData.get(historicalData.size() - 1).getPrice();
 
 
-        BigDecimal change = endPrice.subtract(startPrice)
-                .divide(startPrice, 10, RoundingMode.HALF_UP);
-
+        BigDecimal change = BigDecimal.ZERO;
+        if (startPrice.compareTo(BigDecimal.ZERO) != 0) {
+            change = endPrice.subtract(startPrice)
+                    .divide(startPrice, 10, RoundingMode.HALF_UP);
+        }
         ctx.setPriceChange(change);
 
         return ctx;
