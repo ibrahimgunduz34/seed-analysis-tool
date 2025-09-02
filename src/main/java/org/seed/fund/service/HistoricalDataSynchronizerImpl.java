@@ -28,7 +28,7 @@ public class HistoricalDataSynchronizerImpl implements HistoricalDataSynchronize
     private final HistoricalDataService historicalDataService;
     private final HistoricalDataPersistence historicalDataPersistence;
 
-    private static final Integer FETCH_POOL_SIZE = 3;
+    private static final Integer FETCH_POOL_SIZE = 8;
     private static final Integer PERSISTENCE_POOL_SIZE = 4;
 
     public HistoricalDataSynchronizerImpl(HistoricalDataService historicalDataService, HistoricalDataPersistence historicalDataPersistence) {

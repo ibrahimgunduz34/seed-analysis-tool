@@ -17,6 +17,9 @@ public class DailyChangeCalculator implements Function<ReportContext, ReportCont
                 .mapToObj(i -> {
                     BigDecimal prev = historicalDataList.get(i - 1).getPrice();
                     BigDecimal current = historicalDataList.get(i).getPrice();
+                    if (prev.compareTo(BigDecimal.ZERO) == 0) {
+                        return BigDecimal.ZERO;
+                    }
                     return current.subtract(prev).divide(
                             prev,
                             10,

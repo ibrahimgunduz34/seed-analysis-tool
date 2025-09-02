@@ -19,6 +19,9 @@ public class FundEvaluationCalculator implements Function<ReportContext, ReportC
         double stdev = ctx.getStandardDeviation() != null ? ctx.getStandardDeviation().doubleValue() : 0.0;
         double gain = ctx.getAverageGain() != null ? ctx.getAverageGain().doubleValue() : 0.0;
         double loss = ctx.getAverageLoss() != null ? ctx.getAverageLoss().doubleValue() : 0.0;
+        double positiveDays = ctx.getPositiveIncome() != null ? ctx.getPositiveIncome() : 0;
+        int totalDays = ctx.getHistoricalDataList() != null ? ctx.getHistoricalDataList().size() : 1;
+
 
         // Gün sayısı
         long days = 1;
@@ -43,10 +46,20 @@ public class FundEvaluationCalculator implements Function<ReportContext, ReportC
         double sharpeHigh = 2.0 * Math.sqrt(days / 252.0);
         double sharpeMedium = 1.0 * Math.sqrt(days / 252.0);
 
-        // === Sharpe yorumu ===
-        if (sharpe >= sharpeHigh) summary.append("yüksek risk-düzeltilmiş getiri, ");
-        else if (sharpe >= sharpeMedium) summary.append("orta seviyede risk-düzeltilmiş getiri, ");
-        else summary.append("düşük risk-düzeltilmiş getiri, ");
+        // === Sürekli artan / sabit getirili fon tespiti ===
+        double positiveRatio = (double) positiveDays / totalDays;
+        boolean stableGrowth = positiveRatio > 0.95 && stdev < 0.2;
+
+        // === Sharpe yorumu veya sabit getiri ===
+        if (stableGrowth) {
+            summary.append("istikrarlı/sabit getirili, ");
+        } else if (sharpe >= sharpeHigh) {
+            summary.append("yüksek risk-düzeltilmiş getiri, ");
+        } else if (sharpe >= sharpeMedium) {
+            summary.append("orta seviyede risk-düzeltilmiş getiri, ");
+        } else {
+            summary.append("düşük risk-düzeltilmiş getiri, ");
+        }
 
         // === Fiyat performansı ===
         if (priceChange >= priceStrong) summary.append("çok güçlü getiri, ");

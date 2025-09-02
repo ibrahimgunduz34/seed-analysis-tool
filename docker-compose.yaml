@@ -1,19 +1,36 @@
 services:
-  storage:
-    image: mariadb:latest
+#  storage:
+#    image: mariadb:latest
+#    environment:
+#      MARIADB_ROOT_PASSWORD: root!
+#      MARIADB_USER: appuser
+#      MARIADB_PASSWORD: apppwd
+#      MARIADB_DATABASE: appdb
+#    ports:
+#      - 3306:3306
+#    healthcheck:
+##      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot!" ]
+#      test: /usr/bin/mariadb --user=root --password=$$MARIADB_ROOT_PASSWORD --execute="SHOW DATABASES"
+#      interval: 2s
+#      timeout: 120s
+#      retries: 15
+#      start_period: 30s
+#    volumes:
+#      - .data:/var/lib/mysql:Z
+
+  pgsql:
+    image: postgres:latest
     environment:
-      MARIADB_ROOT_PASSWORD: root!
-      MARIADB_USER: appuser
-      MARIADB_PASSWORD: apppwd
-      MARIADB_DATABASE: appdb
+      POSTGRES_USER: appuser
+      POSTGRES_PASSWORD: apppwd
+      POSTGRES_DB: appdb
     ports:
-      - 3306:3306
+      - 5432:5432
     healthcheck:
-#      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot!" ]
-      test: /usr/bin/mariadb --user=root --password=$$MARIADB_ROOT_PASSWORD --execute="SHOW DATABASES"
+      test: [ "CMD-SHELL", "pg_isready -U appuser -d appdb" ]
       interval: 2s
       timeout: 120s
       retries: 15
       start_period: 30s
     volumes:
-      - .data:/var/lib/mysql:Z
+      - .data/postgresql:/var/lib/postgresql/data:Z

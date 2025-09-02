@@ -67,7 +67,7 @@ public class TablePrinter {
 
     private static void printComments(List<ReportContext> contexts) {
         contexts.forEach(context -> {
-            System.out.printf("%s: %s%n", context.getMetaData().getCode(), context.getEvaluationSummary());
+            System.out.printf("%s%n", context.getEvaluationSummary());
         });
     }
 }
