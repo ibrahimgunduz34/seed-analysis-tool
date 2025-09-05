@@ -12,12 +12,12 @@ public class MaxDrawdownCalculator implements Function<ReportContext, ReportCont
 
     @Override
     public ReportContext apply(ReportContext ctx) {
-        List<HistoricalData> historicalDataList = ctx.getHistoricalDataList();
-
-        if (historicalDataList == null || historicalDataList.isEmpty()) {
+        if (ctx.getNumberOfDays() == 0) {
             ctx.setMaxDrawdown(BigDecimal.ZERO);
             return ctx;
         }
+
+        List<HistoricalData> historicalDataList = ctx.getHistoricalDataList();
 
         BigDecimal peak = historicalDataList.get(0).getPrice();
         BigDecimal maxDrawdown = BigDecimal.ZERO;

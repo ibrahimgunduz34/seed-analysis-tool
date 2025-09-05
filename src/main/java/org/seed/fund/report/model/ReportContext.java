@@ -18,18 +18,23 @@ public class ReportContext {
     private final LocalDate endDate;
 
     private List<BigDecimal> dailyChanges;
-    private Long positiveIncome;
-    private Long negativeIncome;
-    private double positiveIncomePerformance;
-    private double negativeIncomePerformance;
-    private BigDecimal dailyStandardDeviation;
+    private int numberOfDays;
+
+    private int numberOfPositiveDays;
+    private int numberOfNegativeDays;
+    private double weightOfPositiveDays;
+    private double weightOfNegativeDays;
+
     private BigDecimal standardDeviation;
+    private BigDecimal mean;
+
     private BigDecimal priceChange;
     private BigDecimal averageGain;
     private BigDecimal averageLoss;
     private BigDecimal sharpeRatio;
     private String evaluationSummary;
-    ;private BigDecimal maxDrawdown;
+    private BigDecimal maxDrawdown;
+    private BigDecimal sortinoRatio;
 
     public ReportContext(MetaData metaData, List<HistoricalData> historicalDataList, LocalDate beginDate, LocalDate endDate) {
         this.metaData = metaData;

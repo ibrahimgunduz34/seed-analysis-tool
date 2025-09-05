@@ -56,12 +56,13 @@ public class ReportGenerator {
         ReportContext ctx = new ReportContext(fund.getMetaData(), historicalDataList, beginDate, endDate);
 
         Function<ReportContext, ReportContext> pipeline = new DailyChangeCalculator()
-                .andThen(new IncomeCalculator())
-                .andThen(new IncomePerformanceCalculator())
+                .andThen(new PositiveNegativeDaysCalculator())
+                .andThen(new GainLossCalculator())
                 .andThen(new StandardDeviationCalculator())
-                .andThen(new PriceChangeCalculator())
                 .andThen(new SharpeRatioCalculator())
+                .andThen(new PriceChangeCalculator())
                 .andThen(new MaxDrawdownCalculator())
+                .andThen(new SortinoCalculator())
                 .andThen(new FundEvaluationCalculator());
 
         return pipeline.apply(ctx);

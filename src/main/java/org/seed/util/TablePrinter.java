@@ -11,10 +11,10 @@ public class TablePrinter {
             "Negative Days",
             "Average Gain (%)",
             "Average Loss (%)",
-            "Daily stdev (%)",
-            "Periodic stdev (%)",
+            "Stdev (%)",
             "Price Change (%)",
             "Max Drawdown (%)",
+            "Sortino Ratio",
             "Sharpe Ratio"
     };
 
@@ -42,14 +42,14 @@ public class TablePrinter {
             System.out.printf(
                     "%-22s".repeat(headers.length).concat("%n"),
                     ctx.getMetaData().getCode(),
-                    "%d %.2f%%".formatted(ctx.getPositiveIncome(), ctx.getPositiveIncomePerformance()),
-                    "%d %.2f%%".formatted(ctx.getNegativeIncome(), ctx.getNegativeIncomePerformance()),
+                    "%d %.2f%%".formatted(ctx.getNumberOfPositiveDays(), ctx.getWeightOfPositiveDays()),
+                    "%d %.2f%%".formatted(ctx.getNumberOfNegativeDays(), ctx.getWeightOfNegativeDays()),
                     "%.2f".formatted(BigDecimalMath.convertToPercentage(ctx.getAverageGain())),
                     "%.2f".formatted(BigDecimalMath.convertToPercentage(ctx.getAverageLoss())),
-                    "%.2f".formatted(BigDecimalMath.convertToPercentage(ctx.getDailyStandardDeviation())),
                     "%.2f".formatted(BigDecimalMath.convertToPercentage(ctx.getStandardDeviation())),
                     "%.2f".formatted(BigDecimalMath.convertToPercentage(ctx.getPriceChange())),
                     "%.2f".formatted(BigDecimalMath.convertToPercentage(ctx.getMaxDrawdown())),
+                    "%.2f".formatted(ctx.getSortinoRatio()),
                     "%.2f".formatted(ctx.getSharpeRatio())
                     );
         }

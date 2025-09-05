@@ -8,43 +8,35 @@ import java.math.RoundingMode;
 import java.util.function.Function;
 
 public class StandardDeviationCalculator implements Function<ReportContext, ReportContext> {
+
+    private static final int ANNUAL_TRADING_DAYS = 252; // Yıllık iş günü sayısı
+
     @Override
     public ReportContext apply(ReportContext ctx) {
-        BigDecimal total = ctx.getDailyChanges().stream()
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        int n = ctx.getDailyChanges().size();
-
-        if (n <= 1) {
-            ctx.setDailyStandardDeviation(BigDecimal.ZERO);
+        if (ctx.getNumberOfDays() == 0) {
             ctx.setStandardDeviation(BigDecimal.ZERO);
+            ctx.setMean(BigDecimal.ZERO);
             return ctx;
         }
 
-        BigDecimal mean = total.divide(
-                BigDecimal.valueOf(n),
-                10,
-                RoundingMode.HALF_UP
-        );
+        BigDecimal mean = ctx.getDailyChanges()
+                .stream().reduce(BigDecimal.ZERO, BigDecimal::add)
+                .divide(BigDecimal.valueOf(ctx.getNumberOfDays()), RoundingMode.HALF_UP);
 
         BigDecimal sumSquaredDiffs = ctx.getDailyChanges().stream()
                 .map(v -> v.subtract(mean).pow(2))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         BigDecimal variance = sumSquaredDiffs.divide(
-                BigDecimal.valueOf(n - 1),
+                BigDecimal.valueOf(ctx.getNumberOfDays() - 1),
                 10,
-                RoundingMode.HALF_UP
-        );
+                RoundingMode.HALF_UP);
 
         BigDecimal sampleStDev = BigDecimalMath.sqrt(variance, 10);
+        BigDecimal stDev = sampleStDev.multiply(BigDecimalMath.sqrt(BigDecimal.valueOf(ANNUAL_TRADING_DAYS), 10));
 
-        ctx.setDailyStandardDeviation(sampleStDev);
-
-        BigDecimal periodStDev = sampleStDev
-                .multiply(BigDecimalMath.sqrt(BigDecimal.valueOf(n), 10));
-
-        ctx.setStandardDeviation(periodStDev);
+        ctx.setMean(mean);
+        ctx.setStandardDeviation(stDev);
 
         return ctx;
     }
