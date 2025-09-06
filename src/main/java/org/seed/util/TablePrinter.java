@@ -2,6 +2,7 @@ package org.seed.util;
 
 import org.seed.fund.report.model.ReportContext;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class TablePrinter {
@@ -23,13 +24,11 @@ public class TablePrinter {
         printRows(contexts);
         System.out.println("\n");
         printComments(contexts);
-//        System.out.println("\n");
-//        printNotes();
-
+        System.out.println("\n");
+        printSharpeMDDChart(contexts);
     }
 
     private static void printHeaders() {
-        // Print table header
         for (String header : headers) {
             System.out.printf("%-22s", header);
         }
@@ -51,20 +50,51 @@ public class TablePrinter {
                     "%.2f".formatted(BigDecimalMath.convertToPercentage(ctx.getMaxDrawdown())),
                     "%.2f".formatted(ctx.getSortinoRatio()),
                     "%.2f".formatted(ctx.getSharpeRatio())
-                    );
+            );
         }
     }
 
-    private static void printNotes() {
-        System.out.println("Notlar");
-        System.out.println("-".repeat(25));
+    private static void printSharpeMDDChart(List<ReportContext> contexts) {
+        if (contexts == null || contexts.isEmpty()) {
+            System.out.println("Hiç fon verisi yok.");
+            return;
+        }
 
-        System.out.println("Sharpe Ratio su sekilde degerlendirilebilir");
+        int maxBarLength = 20; // çubuğun maksimum uzunluğu
 
-        System.out.println("* >2.0 → Çok iyi risk-getiri dengesi\n" +
-                "* 1.0–2.0 → Kabul edilebilir, yatırım yapılabilir\n" +
-                "* 0–1.0 → Getiri var ama riskine göre düşük\n" +
-                "* <0 → Riskten arındırıldığında zarar");
+        double minSharpe = contexts.stream().mapToDouble(c -> safeDouble(c.getSharpeRatio())).min().orElse(0.0);
+        double maxSharpe = contexts.stream().mapToDouble(c -> safeDouble(c.getSharpeRatio())).max().orElse(1.0);
+        double minMDD = contexts.stream().mapToDouble(c -> Math.abs(safeDouble(c.getMaxDrawdown()))).min().orElse(0.0);
+        double maxMDD = contexts.stream().mapToDouble(c -> Math.abs(safeDouble(c.getMaxDrawdown()))).max().orElse(1.0);
+
+        System.out.println("Fon Performans & Risk Karşılaştırması");
+        System.out.println("-----------------------------");
+
+        for (ReportContext ctx : contexts) {
+            String code = ctx.getMetaData().getCode();
+
+            double sharpe = safeDouble(ctx.getSharpeRatio());
+            double mdd = Math.abs(safeDouble(ctx.getMaxDrawdown()));
+
+            // Sharpe ve MDD’den global normalize edilmiş skor
+            double sharpeNorm = (sharpe - minSharpe) / (maxSharpe - minSharpe + 1e-6);
+            double mddNorm = 1.0 - (mdd - minMDD) / (maxMDD - minMDD + 1e-6); // düşük MDD → yüksek değer
+
+            double combinedScore = (sharpeNorm + mddNorm) / 2.0; // basit ortalama
+            int barLength = (int) Math.round(combinedScore * maxBarLength);
+            barLength = Math.max(barLength, 1);
+
+            StringBuilder bar = new StringBuilder();
+            for (int i = 0; i < barLength; i++) bar.append("█");
+            for (int i = barLength; i < maxBarLength; i++) bar.append("░");
+
+            System.out.printf("%-6s | %s (Sharpe: %.2f, MDD: -%.2f%%)%n",
+                    code, bar.toString(), sharpe, mdd * 100);
+        }
+    }
+
+    private static double safeDouble(BigDecimal value) {
+        return value != null ? value.doubleValue() : 0.0;
     }
 
     private static void printComments(List<ReportContext> contexts) {
