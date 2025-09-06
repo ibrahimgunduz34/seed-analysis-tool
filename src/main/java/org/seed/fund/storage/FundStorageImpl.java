@@ -40,7 +40,7 @@ public class FundStorageImpl implements FundStorage {
     public Fund getFundByCode(String code) {
         MetaDataEntity metaDataEntity = metaDataRepository
                 .findOneByCode(code)
-                .orElseThrow(() -> new NotFoundException("No fund found with the specified code"));
+                .orElseThrow(() -> new NotFoundException("No fund found with the specified code: " + code));
 
         MetaData metaData = metaDataMapper.toModel(metaDataEntity);
 

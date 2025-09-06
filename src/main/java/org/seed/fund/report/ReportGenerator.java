@@ -35,7 +35,11 @@ public class ReportGenerator {
         System.out.printf("Start date: %s%n", beginDate);
         System.out.printf("End date: %s%n", endDate);
 
-        String summary = new SummaryReportCalculator().apply(contexts);
+
+        Function<List<ReportContext>, String> pipeline = new FundEvaluationCalculator()
+                .andThen(new SummaryReportCalculator());
+
+        String summary = pipeline.apply(contexts);
 
         TablePrinter.print(contexts);
 
@@ -62,8 +66,7 @@ public class ReportGenerator {
                 .andThen(new SharpeRatioCalculator())
                 .andThen(new PriceChangeCalculator())
                 .andThen(new MaxDrawdownCalculator())
-                .andThen(new SortinoCalculator())
-                .andThen(new FundEvaluationCalculator());
+                .andThen(new SortinoCalculator());
 
         return pipeline.apply(ctx);
     }

@@ -23,8 +23,8 @@ public class TablePrinter {
         printRows(contexts);
         System.out.println("\n");
         printComments(contexts);
-        System.out.println("\n");
-        printNotes();
+//        System.out.println("\n");
+//        printNotes();
 
     }
 
