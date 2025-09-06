@@ -21,30 +21,16 @@ public class ReportGenerator {
         this.fundStorage = fundStorage;
     }
 
-    public void generate(
+    public List<ReportContext> generate(
             List<String> codes,
             LocalDate beginDate,
             LocalDate endDate,
             BigDecimal initialAmount,
             Integer frequency
     ) {
-        List<ReportContext> contexts = codes.stream()
+        return codes.stream()
                 .map(code -> calculateReportContext(code, beginDate, endDate, initialAmount, frequency))
                 .toList();
-
-        System.out.printf("Start date: %s%n", beginDate);
-        System.out.printf("End date: %s%n", endDate);
-
-
-        Function<List<ReportContext>, String> pipeline = new FundEvaluationCalculator()
-                .andThen(new SummaryReportCalculator());
-
-        String summary = pipeline.apply(contexts);
-
-        TablePrinter.print(contexts);
-
-        System.out.println("\n");
-        System.out.println(summary);
     }
 
     private ReportContext calculateReportContext(

@@ -1,6 +1,8 @@
 package org.seed.fund.command;
 
 import org.seed.fund.report.ReportGenerator;
+import org.seed.fund.report.model.ReportContext;
+import org.seed.fund.report.printer.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
@@ -23,18 +25,6 @@ public class GenerateReport implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-//        List<String> codes = List.of(
-//                "BDS",
-//                "PPH",
-//                "DTL",
-//                "KHC",
-//                "KVT",
-//                "GNS"
-//        );
-
-//        LocalDate beginDate = LocalDate.parse("2025-02-29", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-//        LocalDate endDate = LocalDate.parse("2025-09-02", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-
         LocalDate beginDate = LocalDate.parse(args[0], DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         LocalDate endDate = LocalDate.parse(args[1], DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
@@ -44,6 +34,21 @@ public class GenerateReport implements CommandLineRunner {
         BigDecimal initialAmount = BigDecimal.valueOf(10_000);
         Integer frequency = 30;
 
-        reportGenerator.generate(codes, beginDate, endDate, initialAmount, frequency);
+        CompositePrinter printer = new CompositePrinter(
+                new TablePrinter(),
+                new SharpeMddChartPrinter(),
+                new ReportSummaryPrinter(),
+                new CommentsPrinter()
+        );
+
+        List<ReportContext> contexts = reportGenerator.generate(codes, beginDate, endDate, initialAmount, frequency);
+
+        System.out.printf("Start date: %s%n", beginDate);
+        System.out.printf("End date: %s%n", endDate);
+        System.out.printf("Report time: %s%n", LocalDate.now());
+
+        System.out.print("\n");
+
+        printer.apply(contexts);
     }
 }

@@ -14,7 +14,6 @@ public class SummaryReportCalculator implements Function<List<ReportContext>, St
         if (ctxList == null || ctxList.isEmpty()) return "Hiç fon verisi yok.";
 
         StringBuilder summary = new StringBuilder();
-        summary.append("=== Özet Rapor ===\n\n");
 
         // En iyi / kötü bulmak için karşılaştırmalar
         ReportContext bestSharpe = ctxList.stream()
