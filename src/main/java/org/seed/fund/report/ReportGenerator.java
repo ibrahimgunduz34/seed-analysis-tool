@@ -9,8 +9,10 @@ import org.seed.util.TablePrinter;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 @Component
@@ -30,10 +32,11 @@ public class ReportGenerator {
     ) {
         return codes.stream()
                 .map(code -> calculateReportContext(code, beginDate, endDate, initialAmount, frequency))
+                .flatMap(Optional::stream)
                 .toList();
     }
 
-    private ReportContext calculateReportContext(
+    private Optional<ReportContext> calculateReportContext(
             String code,
             LocalDate beginDate,
             LocalDate endDate,
@@ -42,6 +45,19 @@ public class ReportGenerator {
     ) {
         Fund fund = fundStorage.getFundByCode(code);
         List<HistoricalData> historicalDataList = fundStorage.getHistoricalDataByDateRange(fund.getMetaData().getCode(), beginDate, endDate);
+
+        if (historicalDataList.isEmpty() || Duration.between(beginDate.atStartOfDay(), endDate.atStartOfDay()).toDays() < 30) {
+            return Optional.empty();
+        }
+
+        LocalDate firstAvailableDate = historicalDataList.get(0).getValueDate();
+        long gapDays = Duration.between(beginDate.atStartOfDay(), firstAvailableDate.atStartOfDay()).toDays();
+
+        long toleranceDays = 30;
+        if (gapDays > toleranceDays) {
+            return Optional.empty();
+        }
+
 
         ReportContext ctx = new ReportContext(fund.getMetaData(), historicalDataList, beginDate, endDate);
 
@@ -54,6 +70,6 @@ public class ReportGenerator {
                 .andThen(new MaxDrawdownCalculator())
                 .andThen(new SortinoCalculator());
 
-        return pipeline.apply(ctx);
+        return Optional.of(pipeline.apply(ctx));
     }
 }

@@ -32,28 +32,46 @@ public class SharpeMddChartPrinter implements Function<List<ReportContext>, List
         System.out.println("Fon Performans & Risk Karşılaştırması");
         System.out.printf("%s%n", "-".repeat(50));
 
-        for (ReportContext ctx : contexts) {
+        List<ReportContext> sortedContexts = new java.util.ArrayList<>(contexts);
+
+        sortedContexts.sort((a, b) -> {
+            double sharpeA = safeDouble(a.getSharpeRatio());
+            double mddA = Math.abs(safeDouble(a.getMaxDrawdown()));
+            double sharpeB = safeDouble(b.getSharpeRatio());
+            double mddB = Math.abs(safeDouble(b.getMaxDrawdown()));
+
+            double sharpeNormA = (sharpeA - minSharpe) / (maxSharpe - minSharpe + 1e-6);
+            double mddNormA = 1.0 - (mddA - minMDD) / (maxMDD - minMDD + 1e-6);
+            double combinedA = (sharpeNormA + mddNormA) / 2.0;
+
+            double sharpeNormB = (sharpeB - minSharpe) / (maxSharpe - minSharpe + 1e-6);
+            double mddNormB = 1.0 - (mddB - minMDD) / (maxMDD - minMDD + 1e-6);
+            double combinedB = (sharpeNormB + mddNormB) / 2.0;
+
+            return Double.compare(combinedB, combinedA); // descending order
+        });
+
+        for (ReportContext ctx : sortedContexts) {
             String code = ctx.getMetaData().getCode();
 
             double sharpe = safeDouble(ctx.getSharpeRatio());
             double mdd = Math.abs(safeDouble(ctx.getMaxDrawdown()));
 
-            // Sharpe ve MDD’den global normalize edilmiş skor
             double sharpeNorm = (sharpe - minSharpe) / (maxSharpe - minSharpe + 1e-6);
-            double mddNorm = 1.0 - (mdd - minMDD) / (maxMDD - minMDD + 1e-6); // düşük MDD → yüksek değer
+            double mddNorm = 1.0 - (mdd - minMDD) / (maxMDD - minMDD + 1e-6);
+            double combinedScore = (sharpeNorm + mddNorm) / 2.0;
 
-            double combinedScore = (sharpeNorm + mddNorm) / 2.0; // basit ortalama
             int barLength = (int) Math.round(combinedScore * maxBarLength);
             barLength = Math.max(barLength, 1);
 
-            StringBuilder bar = new StringBuilder();
-            bar.append("█".repeat(barLength));
-            bar.append("░".repeat(Math.max(0, maxBarLength - barLength)));
+            String bar = "█".repeat(barLength) +
+                    "░".repeat(Math.max(0, maxBarLength - barLength));
 
             System.out.printf("%-6s | %s (Sharpe: %.2f, MDD: -%.2f%%)%n",
-                    code, bar.toString(), sharpe, mdd * 100);
+                    code, bar, sharpe, mdd * 100);
         }
     }
+
 
     private  double safeDouble(BigDecimal value) {
         return value != null ? value.doubleValue() : 0.0;

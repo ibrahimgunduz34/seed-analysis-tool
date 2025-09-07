@@ -23,6 +23,12 @@ public class StandardDeviationCalculator implements Function<ReportContext, Repo
                 .stream().reduce(BigDecimal.ZERO, BigDecimal::add)
                 .divide(BigDecimal.valueOf(ctx.getNumberOfDays()), RoundingMode.HALF_UP);
 
+        if (mean.compareTo(BigDecimal.ZERO) == 0) {
+            ctx.setStandardDeviation(BigDecimal.ZERO);
+            ctx.setMean(BigDecimal.ZERO);
+            return ctx;
+        }
+
         BigDecimal sumSquaredDiffs = ctx.getDailyChanges().stream()
                 .map(v -> v.subtract(mean).pow(2))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);

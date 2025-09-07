@@ -2,6 +2,8 @@ package org.seed.fund.command;
 
 import org.seed.fund.model.MetaData;
 import org.seed.fund.report.ReportGenerator;
+import org.seed.fund.report.model.ReportContext;
+import org.seed.fund.report.printer.*;
 import org.seed.fund.storage.FundStorage;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -34,16 +36,29 @@ public class GenerateReportAll implements CommandLineRunner {
         BigDecimal initialAmount = BigDecimal.valueOf(10_000);
         Integer frequency = 30;
 
+        CompositePrinter printer = new CompositePrinter(
+                new SharpeMddChartPrinter(),
+                new ReportSummaryPrinter()
+        );
+
         Map<String, List<MetaData>> groupedMetaDataList = fundStorage.getMetaDataList().stream()
                 .collect(Collectors.groupingBy(MetaData::getFundType));
 
+        System.out.printf("Start date: %s%n", beginDate);
+        System.out.printf("End date: %s%n", endDate);
+        System.out.printf("Report time: %s%n", LocalDate.now());
+
+        System.out.print("\n");
+
         groupedMetaDataList.forEach((key, metaDataList) -> {
             System.out.println(key);
-            System.out.println("=".repeat(30));
-            System.out.println("\n");
+            System.out.printf("%s%n", "=".repeat(50));
 
             List<String> codes = metaDataList.stream().map(MetaData::getCode).toList();
-            reportGenerator.generate(codes, beginDate, endDate, initialAmount, frequency);
+            List<ReportContext> contexts = reportGenerator.generate(codes, beginDate, endDate, initialAmount, frequency);
+
+            printer.apply(contexts);
+
             System.out.println("\n");
         });
     }

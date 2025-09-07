@@ -12,7 +12,7 @@ public class MaxDrawdownCalculator implements Function<ReportContext, ReportCont
 
     @Override
     public ReportContext apply(ReportContext ctx) {
-        if (ctx.getNumberOfDays() == 0) {
+        if (ctx.getNumberOfDays() == 0 || ctx.getMean().compareTo(BigDecimal.ZERO) == 0) {
             ctx.setMaxDrawdown(BigDecimal.ZERO);
             return ctx;
         }
@@ -27,6 +27,11 @@ public class MaxDrawdownCalculator implements Function<ReportContext, ReportCont
             if (price.compareTo(peak) > 0) {
                 peak = price;
             }
+
+            if (peak.compareTo(BigDecimal.ZERO) == 0) {
+                continue; // Peak sıfırsa drawdown hesaplanamaz, atla
+            }
+
             // Drawdown = (CurrentPrice / Peak) - 1
             BigDecimal drawdown = price.divide(peak, 10, RoundingMode.HALF_UP).subtract(BigDecimal.ONE);
 
