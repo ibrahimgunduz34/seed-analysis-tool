@@ -1,7 +1,7 @@
 package org.seed.fund.service.provider;
 
-import org.seed.fund.model.ExternalHistoricalData;
-import org.seed.fund.model.MetaData;
+import org.seed.fund.model.ExternalFundHistoricalData;
+import org.seed.fund.model.FundMetaData;
 import org.seed.fund.model.ServiceResponse;
 import org.seed.fund.service.provider.tefas.HistoricalDataListRequestBuilder;
 import org.seed.fund.service.provider.tefas.HistoricalDataListResponseParser;
@@ -30,7 +30,7 @@ public class HistoricalDataServiceImpl implements HistoricalDataService {
     }
 
     @Override
-    public ServiceResponse<List<ExternalHistoricalData>> retrieveList(LocalDate valueDate) {
+    public ServiceResponse<List<ExternalFundHistoricalData>> retrieveList(LocalDate valueDate) {
         HttpRequest httpRequest = requestBuilder.buildRequest(valueDate);
         HttpResponse<String> response;
 
@@ -40,8 +40,8 @@ public class HistoricalDataServiceImpl implements HistoricalDataService {
             return new ServiceResponse<>(null, e.getMessage());
         }
 
-        List<MetaData> availableMetaDataList = fundStorage.getMetaDataList();
-        List<ExternalHistoricalData> parsedResponse = responseParser.parse(response, availableMetaDataList);
+        List<FundMetaData> availableFundMetaDataList = fundStorage.getMetaDataList();
+        List<ExternalFundHistoricalData> parsedResponse = responseParser.parse(response, availableFundMetaDataList);
 
         return new ServiceResponse<>(parsedResponse, null);
     }

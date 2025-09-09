@@ -1,6 +1,6 @@
 package org.seed.fund.command;
 
-import org.seed.fund.model.MetaData;
+import org.seed.fund.model.FundMetaData;
 import org.seed.fund.report.ReportGenerator;
 import org.seed.fund.report.model.ReportContext;
 import org.seed.fund.report.printer.*;
@@ -41,8 +41,8 @@ public class GenerateReportAll implements CommandLineRunner {
                 new ReportSummaryPrinter()
         );
 
-        Map<String, List<MetaData>> groupedMetaDataList = fundStorage.getMetaDataList().stream()
-                .collect(Collectors.groupingBy(MetaData::getFundType));
+        Map<String, List<FundMetaData>> groupedMetaDataList = fundStorage.getMetaDataList().stream()
+                .collect(Collectors.groupingBy(FundMetaData::getFundType));
 
         System.out.printf("Start date: %s%n", beginDate);
         System.out.printf("End date: %s%n", endDate);
@@ -54,7 +54,7 @@ public class GenerateReportAll implements CommandLineRunner {
             System.out.println(key);
             System.out.printf("%s%n", "=".repeat(50));
 
-            List<String> codes = metaDataList.stream().map(MetaData::getCode).toList();
+            List<String> codes = metaDataList.stream().map(FundMetaData::getCode).toList();
             List<ReportContext> contexts = reportGenerator.generate(codes, beginDate, endDate, initialAmount, frequency);
 
             printer.apply(contexts);

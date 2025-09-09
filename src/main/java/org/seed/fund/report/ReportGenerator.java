@@ -1,11 +1,10 @@
 package org.seed.fund.report;
 
 import org.seed.fund.model.Fund;
-import org.seed.fund.model.HistoricalData;
+import org.seed.fund.model.FundHistoricalData;
 import org.seed.fund.report.calculator.*;
 import org.seed.fund.report.model.ReportContext;
 import org.seed.fund.storage.FundStorage;
-import org.seed.util.TablePrinter;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -44,13 +43,13 @@ public class ReportGenerator {
             Integer frequency
     ) {
         Fund fund = fundStorage.getFundByCode(code);
-        List<HistoricalData> historicalDataList = fundStorage.getHistoricalDataByDateRange(fund.getMetaData().getCode(), beginDate, endDate);
+        List<FundHistoricalData> fundHistoricalDataList = fundStorage.getHistoricalDataByDateRange(fund.getFundMetaData().getCode(), beginDate, endDate);
 
-        if (historicalDataList.isEmpty() || Duration.between(beginDate.atStartOfDay(), endDate.atStartOfDay()).toDays() < 30) {
+        if (fundHistoricalDataList.isEmpty() || Duration.between(beginDate.atStartOfDay(), endDate.atStartOfDay()).toDays() < 30) {
             return Optional.empty();
         }
 
-        LocalDate firstAvailableDate = historicalDataList.get(0).getValueDate();
+        LocalDate firstAvailableDate = fundHistoricalDataList.get(0).getValueDate();
         long gapDays = Duration.between(beginDate.atStartOfDay(), firstAvailableDate.atStartOfDay()).toDays();
 
         long toleranceDays = 30;
@@ -59,7 +58,7 @@ public class ReportGenerator {
         }
 
 
-        ReportContext ctx = new ReportContext(fund.getMetaData(), historicalDataList, beginDate, endDate);
+        ReportContext ctx = new ReportContext(fund.getFundMetaData(), fundHistoricalDataList, beginDate, endDate);
 
         Function<ReportContext, ReportContext> pipeline = new DailyChangeCalculator()
                 .andThen(new PositiveNegativeDaysCalculator())

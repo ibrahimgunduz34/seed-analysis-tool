@@ -1,15 +1,15 @@
 package org.seed.fund.service.provider.tefas;
 
 import com.google.gson.*;
-import org.seed.fund.model.ExternalMetaData;
+import org.seed.fund.model.ExternalFundMetaData;
 
 import java.lang.reflect.Type;
 import java.util.Currency;
 import java.util.List;
 
-public class ExternalMetaDataDeserializer implements JsonDeserializer<List<ExternalMetaData>> {
+public class ExternalMetaDataDeserializer implements JsonDeserializer<List<ExternalFundMetaData>> {
     @Override
-    public List<ExternalMetaData> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public List<ExternalFundMetaData> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject obj = json.getAsJsonObject();
         if (!obj.has("data")) {
             throw new IllegalArgumentException("Received invalid response from TEFAS");
@@ -22,7 +22,7 @@ public class ExternalMetaDataDeserializer implements JsonDeserializer<List<Exter
                 .stream()
                 .map(e -> {
                     JsonObject item = e.getAsJsonObject();
-                    return new ExternalMetaData(
+                    return new ExternalFundMetaData(
                             item.get("FONKODU").getAsString(),
                             item.get("FONUNVAN").getAsString(),
                             item.get("FONTURACIKLAMA").getAsString(),

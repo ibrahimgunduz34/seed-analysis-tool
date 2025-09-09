@@ -1,6 +1,6 @@
 package org.seed.fund.report.calculator;
 
-import org.seed.fund.model.HistoricalData;
+import org.seed.fund.model.FundHistoricalData;
 import org.seed.fund.report.model.ReportContext;
 
 import java.math.BigDecimal;
@@ -17,13 +17,13 @@ public class MaxDrawdownCalculator implements Function<ReportContext, ReportCont
             return ctx;
         }
 
-        List<HistoricalData> historicalDataList = ctx.getHistoricalDataList();
+        List<FundHistoricalData> fundHistoricalDataList = ctx.getFundHistoricalDataList();
 
-        BigDecimal peak = historicalDataList.get(0).getPrice();
+        BigDecimal peak = fundHistoricalDataList.get(0).getPrice();
         BigDecimal maxDrawdown = BigDecimal.ZERO;
 
-        for (HistoricalData historicalData : historicalDataList) {
-            BigDecimal price = historicalData.getPrice();
+        for (FundHistoricalData fundHistoricalData : fundHistoricalDataList) {
+            BigDecimal price = fundHistoricalData.getPrice();
             if (price.compareTo(peak) > 0) {
                 peak = price;
             }

@@ -1,6 +1,6 @@
 package org.seed.fund.service.provider;
 
-import org.seed.fund.model.ExternalMetaData;
+import org.seed.fund.model.ExternalFundMetaData;
 import org.seed.fund.model.ServiceResponse;
 import org.seed.fund.service.provider.tefas.MetaDataListRequestBuilder;
 import org.seed.fund.service.provider.tefas.MetaDataListResponseParser;
@@ -25,7 +25,7 @@ public class MetaDataServiceImpl implements MetaDataService {
     }
 
     @Override
-    public ServiceResponse<List<ExternalMetaData>> retrieveList() {
+    public ServiceResponse<List<ExternalFundMetaData>> retrieveList() {
         HttpRequest httpRequest = requestBuilder.buildRequest();
         HttpResponse<String> response;
 
@@ -35,7 +35,7 @@ public class MetaDataServiceImpl implements MetaDataService {
             return new ServiceResponse<>(null, e.getMessage());
         }
 
-        List<ExternalMetaData> parsedResponse = responseParser.parse(response);
+        List<ExternalFundMetaData> parsedResponse = responseParser.parse(response);
 
         return new ServiceResponse<>(parsedResponse, null);
     }

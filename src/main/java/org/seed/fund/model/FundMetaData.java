@@ -8,7 +8,7 @@ import java.util.Currency;
 
 @AllArgsConstructor
 @Getter
-public class MetaData {
+public class FundMetaData {
     private final Long id;
     private final String code;
     private final String name;
@@ -16,8 +16,8 @@ public class MetaData {
     private final Currency currency;
     private final LocalDateTime createdAt;
 
-    public static MetaData create(String code, String name, String fundType, Currency currency) {
-        return new MetaData(
+    public static FundMetaData create(String code, String name, String fundType, Currency currency) {
+        return new FundMetaData(
                 null,
                 code,
                 name,

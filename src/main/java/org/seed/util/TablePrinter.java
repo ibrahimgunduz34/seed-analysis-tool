@@ -40,7 +40,7 @@ public class TablePrinter {
         for (ReportContext ctx : contexts) {
             System.out.printf(
                     "%-22s".repeat(headers.length).concat("%n"),
-                    ctx.getMetaData().getCode(),
+                    ctx.getFundMetaData().getCode(),
                     "%d %.2f%%".formatted(ctx.getNumberOfPositiveDays(), ctx.getWeightOfPositiveDays()),
                     "%d %.2f%%".formatted(ctx.getNumberOfNegativeDays(), ctx.getWeightOfNegativeDays()),
                     "%.2f".formatted(BigDecimalMath.convertToPercentage(ctx.getAverageGain())),
@@ -71,7 +71,7 @@ public class TablePrinter {
         System.out.println("-----------------------------");
 
         for (ReportContext ctx : contexts) {
-            String code = ctx.getMetaData().getCode();
+            String code = ctx.getFundMetaData().getCode();
 
             double sharpe = safeDouble(ctx.getSharpeRatio());
             double mdd = Math.abs(safeDouble(ctx.getMaxDrawdown()));

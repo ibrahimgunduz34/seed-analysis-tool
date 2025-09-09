@@ -9,18 +9,18 @@ import java.util.Optional;
 @Getter
 public class Fund {
     private final Long id;
-    private final MetaData metaData;
-    private final HistoricalData additionalData;
+    private final FundMetaData fundMetaData;
+    private final FundHistoricalData additionalData;
 
-    public Optional<HistoricalData> getAdditionalData() {
+    public Optional<FundHistoricalData> getAdditionalData() {
         return Optional.ofNullable(additionalData);
     }
 
-    public static Fund create(MetaData metaData, HistoricalData historicalData) {
+    public static Fund create(FundMetaData fundMetaData, FundHistoricalData fundHistoricalData) {
         return new Fund(
-                metaData.getId(),
-                metaData,
-                historicalData
+                fundMetaData.getId(),
+                fundMetaData,
+                fundHistoricalData
         );
     }
 }

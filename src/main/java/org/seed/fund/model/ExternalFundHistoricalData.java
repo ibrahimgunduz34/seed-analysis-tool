@@ -8,16 +8,16 @@ import java.time.LocalDate;
 
 @AllArgsConstructor
 @Getter
-public class ExternalHistoricalData {
-    private final MetaData metaData;
+public class ExternalFundHistoricalData {
+    private final FundMetaData fundMetaData;
     private final BigDecimal numberOfShares;
     private final Integer numberOfInvestors;
     private final BigDecimal totalValue;
     private final BigDecimal price;
     private final LocalDate valueDate;
 
-    public HistoricalData toModel() {
-        return HistoricalData.create(
+    public FundHistoricalData toModel() {
+        return FundHistoricalData.create(
                 numberOfShares,
                 numberOfInvestors,
                 totalValue,

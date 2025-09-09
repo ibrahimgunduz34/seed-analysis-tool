@@ -3,15 +3,15 @@ package org.seed.fund.storage;
 import jakarta.transaction.Transactional;
 import org.seed.exception.NotFoundException;
 import org.seed.fund.mapper.FundMapper;
-import org.seed.fund.mapper.HistoricalDataMapper;
-import org.seed.fund.mapper.MetaDataMapper;
+import org.seed.fund.mapper.FundHistoricalDataMapper;
+import org.seed.fund.mapper.FundMetaDataMapper;
 import org.seed.fund.model.Fund;
-import org.seed.fund.model.HistoricalData;
-import org.seed.fund.model.MetaData;
-import org.seed.fund.storage.jpa.entity.HistoricalDataEntity;
-import org.seed.fund.storage.jpa.entity.MetaDataEntity;
-import org.seed.fund.storage.jpa.repository.HistoricalDataRepository;
-import org.seed.fund.storage.jpa.repository.MetaDataRepository;
+import org.seed.fund.model.FundHistoricalData;
+import org.seed.fund.model.FundMetaData;
+import org.seed.fund.storage.jpa.entity.FundHistoricalDataEntity;
+import org.seed.fund.storage.jpa.entity.FundMetaDataEntity;
+import org.seed.fund.storage.jpa.repository.FundHistoricalDataRepository;
+import org.seed.fund.storage.jpa.repository.FundMetaDataRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
@@ -23,95 +23,95 @@ import java.util.stream.Collectors;
 
 @Component
 public class FundStorageImpl implements FundStorage {
-    private final MetaDataRepository metaDataRepository;
-    private final HistoricalDataRepository historicalDataRepository;
-    private final MetaDataMapper metaDataMapper;
-    private final HistoricalDataMapper historicalDataMapper;
+    private final FundMetaDataRepository fundMetaDataRepository;
+    private final FundHistoricalDataRepository fundHistoricalDataRepository;
+    private final FundMetaDataMapper fundMetaDataMapper;
+    private final FundHistoricalDataMapper fundHistoricalDataMapper;
     private final FundMapper fundMapper;
 
-    public FundStorageImpl(MetaDataRepository metaDataRepository, HistoricalDataRepository historicalDataRepository, MetaDataMapper metaDataMapper, HistoricalDataMapper historicalDataMapper, FundMapper fundMapper) {
-        this.metaDataRepository = metaDataRepository;
-        this.historicalDataRepository = historicalDataRepository;
-        this.metaDataMapper = metaDataMapper;
-        this.historicalDataMapper = historicalDataMapper;
+    public FundStorageImpl(FundMetaDataRepository fundMetaDataRepository, FundHistoricalDataRepository fundHistoricalDataRepository, FundMetaDataMapper fundMetaDataMapper, FundHistoricalDataMapper fundHistoricalDataMapper, FundMapper fundMapper) {
+        this.fundMetaDataRepository = fundMetaDataRepository;
+        this.fundHistoricalDataRepository = fundHistoricalDataRepository;
+        this.fundMetaDataMapper = fundMetaDataMapper;
+        this.fundHistoricalDataMapper = fundHistoricalDataMapper;
         this.fundMapper = fundMapper;
     }
 
     public Fund getFundByCode(String code) {
-        MetaDataEntity metaDataEntity = metaDataRepository
+        FundMetaDataEntity fundMetaDataEntity = fundMetaDataRepository
                 .findOneByCode(code)
                 .orElseThrow(() -> new NotFoundException("No fund found with the specified code: " + code));
 
-        MetaData metaData = metaDataMapper.toModel(metaDataEntity);
+        FundMetaData fundMetaData = fundMetaDataMapper.toModel(fundMetaDataEntity);
 
-        HistoricalData historicalData = historicalDataRepository.findOneByMetaDataCode(code, PageRequest.of(0, 1))
+        FundHistoricalData fundHistoricalData = fundHistoricalDataRepository.findOneByMetaDataCode(code, PageRequest.of(0, 1))
                 .stream().findFirst()
-                .map(historicalDataMapper::toModel)
+                .map(fundHistoricalDataMapper::toModel)
                 .orElse(null);
 
-        return Fund.create(metaData, historicalData);
+        return Fund.create(fundMetaData, fundHistoricalData);
     }
 
     @Override
-    public List<MetaData> getMetaDataList() {
-        return metaDataRepository.findAll()
+    public List<FundMetaData> getMetaDataList() {
+        return fundMetaDataRepository.findAll()
                 .stream()
-                .map(metaDataMapper::toModel)
+                .map(fundMetaDataMapper::toModel)
                 .toList();
     }
 
     public List<Fund> getFundsByValueDate(LocalDate valueDate) {
-        return historicalDataRepository.findAllByValueDate(valueDate)
+        return fundHistoricalDataRepository.findAllByValueDate(valueDate)
                 .stream()
                 .map(fundMapper::toModel)
                 .toList();
     }
 
     @Override
-    public List<HistoricalData> getHistoricalDataByDateRange(String code, LocalDate beginDate, LocalDate endDate) {
-        return historicalDataRepository.findAllByDateRange(code, beginDate, endDate)
+    public List<FundHistoricalData> getHistoricalDataByDateRange(String code, LocalDate beginDate, LocalDate endDate) {
+        return fundHistoricalDataRepository.findAllByDateRange(code, beginDate, endDate)
                 .stream()
-                .map(historicalDataMapper::toModel)
+                .map(fundHistoricalDataMapper::toModel)
                 .toList();
     }
 
-    public MetaData save(MetaData metaData) {
-        MetaDataEntity metaDataEntity = metaDataMapper.toEntity(metaData);
-        MetaDataEntity createdMetaData = metaDataRepository.save(metaDataEntity);
-        return metaDataMapper.toModel(createdMetaData);
+    public FundMetaData save(FundMetaData fundMetaData) {
+        FundMetaDataEntity fundMetaDataEntity = fundMetaDataMapper.toEntity(fundMetaData);
+        FundMetaDataEntity createdMetaData = fundMetaDataRepository.save(fundMetaDataEntity);
+        return fundMetaDataMapper.toModel(createdMetaData);
     }
 
     @Transactional
     @Override
-    public void saveAll(List<MetaData> metaDataList) {
-        List<MetaDataEntity> entities = metaDataList.stream()
-                .map(metaDataMapper::toEntity)
+    public void saveAll(List<FundMetaData> fundMetaDataList) {
+        List<FundMetaDataEntity> entities = fundMetaDataList.stream()
+                .map(fundMetaDataMapper::toEntity)
                 .toList();
 
-        metaDataRepository.saveAll(entities);
+        fundMetaDataRepository.saveAll(entities);
     }
 
     @Override
-    public HistoricalData save(MetaData metaData, HistoricalData historicalData) {
-        HistoricalDataEntity historicalDataEntity = historicalDataMapper.toEntity(metaData, historicalData);
-        HistoricalDataEntity entity = historicalDataRepository.save(historicalDataEntity);
-        return historicalDataMapper.toModel(entity);
+    public FundHistoricalData save(FundMetaData fundMetaData, FundHistoricalData fundHistoricalData) {
+        FundHistoricalDataEntity fundHistoricalDataEntity = fundHistoricalDataMapper.toEntity(fundMetaData, fundHistoricalData);
+        FundHistoricalDataEntity entity = fundHistoricalDataRepository.save(fundHistoricalDataEntity);
+        return fundHistoricalDataMapper.toModel(entity);
     }
 
     @Override
-    public List<HistoricalData> saveAll(Map<String, List<HistoricalData>> models) {
-        Map<String, MetaData> metaDataMap = getMetaDataList().stream()
-                .collect(Collectors.toMap(MetaData::getCode, Function.identity()));
+    public List<FundHistoricalData> saveAll(Map<String, List<FundHistoricalData>> models) {
+        Map<String, FundMetaData> metaDataMap = getMetaDataList().stream()
+                .collect(Collectors.toMap(FundMetaData::getCode, Function.identity()));
 
-        List<HistoricalDataEntity> entities = models.entrySet().stream()
+        List<FundHistoricalDataEntity> entities = models.entrySet().stream()
                 .flatMap(
                         entry -> entry.getValue().stream()
-                                .map(item -> historicalDataMapper.toEntity(metaDataMap.get(entry.getKey()), item))
+                                .map(item -> fundHistoricalDataMapper.toEntity(metaDataMap.get(entry.getKey()), item))
                 )
                 .toList();
 
 
-        return historicalDataMapper.toModel(historicalDataRepository.saveAll(entities));
+        return fundHistoricalDataMapper.toModel(fundHistoricalDataRepository.saveAll(entities));
     }
 
 }

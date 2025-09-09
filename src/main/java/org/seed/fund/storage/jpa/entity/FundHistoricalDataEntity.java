@@ -16,13 +16,13 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class HistoricalDataEntity {
+public class FundHistoricalDataEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    private MetaDataEntity metaData;
+    private FundMetaDataEntity metaData;
 
     @Column(nullable = false)
     private BigDecimal numberOfShares;

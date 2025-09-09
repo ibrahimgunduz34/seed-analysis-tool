@@ -15,73 +15,46 @@ public class SummaryReportCalculator implements Function<List<ReportContext>, St
 
         StringBuilder summary = new StringBuilder();
 
-        // En iyi / kötü bulmak için karşılaştırmalar
-        ReportContext bestSharpe = ctxList.stream()
-                .max(Comparator.comparing(c -> safeDouble(c.getSharpeRatio())))
-                .orElse(null);
-        ReportContext bestPriceChange = ctxList.stream()
-                .max(Comparator.comparing(c -> safeDouble(c.getPriceChange())))
-                .orElse(null);
-        ReportContext worstPriceChange = ctxList.stream()
-                .min(Comparator.comparing(c -> safeDouble(c.getPriceChange())))
-                .orElse(null);
-        ReportContext highestRisk = ctxList.stream()
-                .max(Comparator.comparing(c -> Math.abs(safeDouble(c.getMaxDrawdown()))))
-                .orElse(null);
-        ReportContext lowestRisk = ctxList.stream()
-                .min(Comparator.comparing(c -> Math.abs(safeDouble(c.getMaxDrawdown()))))
-                .orElse(null);
-
-        summary.append(String.format("En iyi risk-düzeltilmiş getiri (Sharpe): %s %.2f%n",
-                bestSharpe.getMetaData().getCode(),
-                safeDouble(bestSharpe.getSharpeRatio())));
-        summary.append(String.format("En yüksek fiyat değişimi: %s %.2f%%%n",
-                bestPriceChange.getMetaData().getCode(),
-                safeDouble(bestPriceChange.getPriceChange()) * 100));
-        summary.append(String.format("En düşük fiyat değişimi: %s %.2f%%%n",
-                worstPriceChange.getMetaData().getCode(),
-                safeDouble(worstPriceChange.getPriceChange()) * 100));
-        summary.append(String.format("En yüksek risk (MDD): %s %.2f%%%n",
-                highestRisk.getMetaData().getCode(),
-                safeDouble(highestRisk.getMaxDrawdown()) * 100));
-        summary.append(String.format("En düşük risk (MDD): %s %.2f%%%n",
-                lowestRisk.getMetaData().getCode(),
-                safeDouble(lowestRisk.getMaxDrawdown()) * 100));
-
+        // Genel istatistikler
         double avgVolatility = ctxList.stream()
                 .mapToDouble(c -> safeDouble(c.getStandardDeviation()) * 100)
                 .average().orElse(0.0);
+
         summary.append(String.format("Tüm fonların ortalama volatilitesi: %.2f%%%n", avgVolatility));
 
-        // Min / max değerleri dinamik kıyaslama için
+        // Normalizasyon için min/max değerleri çıkar
         double minSharpe = ctxList.stream().mapToDouble(c -> safeDouble(c.getSharpeRatio())).min().orElse(0.0);
         double maxSharpe = ctxList.stream().mapToDouble(c -> safeDouble(c.getSharpeRatio())).max().orElse(1.0);
         double minMdd = ctxList.stream().mapToDouble(c -> Math.abs(safeDouble(c.getMaxDrawdown()))).min().orElse(0.0);
         double maxMdd = ctxList.stream().mapToDouble(c -> Math.abs(safeDouble(c.getMaxDrawdown()))).max().orElse(1.0);
         double minVol = ctxList.stream().mapToDouble(c -> safeDouble(c.getStandardDeviation()) * 100).min().orElse(0.0);
         double maxVol = ctxList.stream().mapToDouble(c -> safeDouble(c.getStandardDeviation()) * 100).max().orElse(1.0);
+        double minReturn = ctxList.stream().mapToDouble(c -> safeDouble(c.getPriceChange())).min().orElse(0.0);
+        double maxReturn = ctxList.stream().mapToDouble(c -> safeDouble(c.getPriceChange())).max().orElse(1.0);
 
-        // Sharpe/MDD dengesine göre ilk 3 fon
-        List<ReportContext> top3BySharpeToRisk = ctxList.stream()
+        // Genel performans skoruna göre ilk 3 fon
+        List<ReportContext> top3ByCompositeScore = ctxList.stream()
                 .sorted(Comparator.comparingDouble(
-                        c -> -safeDouble(c.getSharpeRatio()) / (Math.abs(safeDouble(c.getMaxDrawdown())) + 1e-6)))
+                        c -> -combinedScore(c, minSharpe, maxSharpe, minMdd, maxMdd, minVol, maxVol, minReturn, maxReturn)))
                 .limit(3)
                 .toList();
 
-        summary.append("En iyi Sharpe/MDD dengesi olan ilk 3 fon:\n");
-        for (ReportContext c : top3BySharpeToRisk) {
+        summary.append("En iyi genel performans skoruna sahip ilk 3 fon:\n");
+        for (ReportContext c : top3ByCompositeScore) {
             double sharpe = safeDouble(c.getSharpeRatio());
             double mdd = safeDouble(c.getMaxDrawdown()) * 100;
             double volatility = safeDouble(c.getStandardDeviation()) * 100;
+            double returnPct = safeDouble(c.getPriceChange()) * 100;
 
-            summary.append(String.format(" - %s (Sharpe: %.2f, MDD: %.2f%%) : %s%n",
-                    c.getMetaData().getCode(),
+            double score = combinedScore(c, minSharpe, maxSharpe, minMdd, maxMdd, minVol, maxVol, minReturn, maxReturn);
+
+            summary.append(String.format(" - %s (Skor: %.2f, Sharpe: %.2f, MDD: %.2f%%, Return: %.2f%%, Volatilite: %.2f%%)%n",
+                    c.getFundMetaData().getCode(),
+                    score,
                     sharpe,
                     mdd,
-                    investorGuidance(sharpe, mdd, volatility,
-                            minSharpe, maxSharpe,
-                            minMdd, maxMdd,
-                            minVol, maxVol)));
+                    returnPct,
+                    volatility));
         }
 
         return summary.toString();
@@ -91,21 +64,23 @@ public class SummaryReportCalculator implements Function<List<ReportContext>, St
         return value != null ? value.doubleValue() : 0.0;
     }
 
-    private String investorGuidance(double sharpe, double mdd, double volatility,
-                                    double minSharpe, double maxSharpe,
-                                    double minMdd, double maxMdd,
-                                    double minVol, double maxVol) {
+    private double combinedScore(ReportContext ctx,
+                                 double minSharpe, double maxSharpe,
+                                 double minMdd, double maxMdd,
+                                 double minVol, double maxVol,
+                                 double minReturn, double maxReturn) {
 
-        double sharpeScore = (sharpe - minSharpe) / (maxSharpe - minSharpe + 1e-6);
-        double mddScore = (Math.abs(mdd) - Math.abs(minMdd)) / (Math.abs(maxMdd - minMdd) + 1e-6);
-        double volScore = (volatility - minVol) / (maxVol - minVol + 1e-6);
+        double sharpe = safeDouble(ctx.getSharpeRatio());
+        double mdd = Math.abs(safeDouble(ctx.getMaxDrawdown()));
+        double vol = safeDouble(ctx.getStandardDeviation()) * 100;
+        double returnPct = safeDouble(ctx.getPriceChange());
 
-        if (sharpeScore > 0.7 && mddScore < 0.3 && volScore < 0.3) {
-            return "Düşük riskli ve yüksek getirili, dengeli portföylerde tercih edilebilir";
-        } else if (sharpeScore > 0.5 && mddScore < 0.6) {
-            return "Orta/uzun vadeli yatırım için uygun, volatiliteye dikkat";
-        } else {
-            return "Yüksek dalgalanma ve risk mevcut, yalnızca yüksek risk toleransı olan yatırımcılar için";
-        }
+        double sharpeNorm = (sharpe - minSharpe) / (maxSharpe - minSharpe + 1e-6);
+        double mddNorm = 1.0 - (mdd - minMdd) / (maxMdd - minMdd + 1e-6);
+        double volNorm = 1.0 - (vol - minVol) / (maxVol - minVol + 1e-6); // düşük vol daha iyi
+        double returnNorm = (returnPct - minReturn) / (maxReturn - minReturn + 1e-6);
+
+        // Ağırlıklar: Sharpe %35, MDD %25, Getiri %25, Volatilite %15
+        return 0.35 * sharpeNorm + 0.25 * mddNorm + 0.25 * returnNorm + 0.15 * volNorm;
     }
 }

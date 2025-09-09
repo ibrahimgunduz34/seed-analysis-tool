@@ -24,7 +24,7 @@ public class FundEvaluationCalculator implements Function<List<ReportContext>, L
 
         for (ReportContext ctx : ctxList) {
             StringBuilder evaluation = new StringBuilder();
-            evaluation.append(ctx.getMetaData().getCode()).append(":\n");
+            evaluation.append(ctx.getFundMetaData().getCode()).append(":\n");
 
             // 1) Risk ve volatilite
             BigDecimal vol = ctx.getStandardDeviation();

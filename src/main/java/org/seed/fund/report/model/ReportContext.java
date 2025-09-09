@@ -2,8 +2,8 @@ package org.seed.fund.report.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.seed.fund.model.HistoricalData;
-import org.seed.fund.model.MetaData;
+import org.seed.fund.model.FundHistoricalData;
+import org.seed.fund.model.FundMetaData;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -12,8 +12,8 @@ import java.util.List;
 @Getter
 @Setter
 public class ReportContext {
-    private final MetaData metaData;
-    private final List<HistoricalData> historicalDataList;
+    private final FundMetaData fundMetaData;
+    private final List<FundHistoricalData> fundHistoricalDataList;
     private final LocalDate beginDate;
     private final LocalDate endDate;
 
@@ -36,9 +36,9 @@ public class ReportContext {
     private BigDecimal maxDrawdown;
     private BigDecimal sortinoRatio;
 
-    public ReportContext(MetaData metaData, List<HistoricalData> historicalDataList, LocalDate beginDate, LocalDate endDate) {
-        this.metaData = metaData;
-        this.historicalDataList = historicalDataList;
+    public ReportContext(FundMetaData fundMetaData, List<FundHistoricalData> fundHistoricalDataList, LocalDate beginDate, LocalDate endDate) {
+        this.fundMetaData = fundMetaData;
+        this.fundHistoricalDataList = fundHistoricalDataList;
         this.beginDate = beginDate;
         this.endDate = endDate;
     }

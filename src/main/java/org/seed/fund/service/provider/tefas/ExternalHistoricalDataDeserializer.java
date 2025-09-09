@@ -1,8 +1,8 @@
 package org.seed.fund.service.provider.tefas;
 
 import com.google.gson.*;
-import org.seed.fund.model.ExternalHistoricalData;
-import org.seed.fund.model.MetaData;
+import org.seed.fund.model.ExternalFundHistoricalData;
+import org.seed.fund.model.FundMetaData;
 
 import java.lang.reflect.Type;
 import java.math.RoundingMode;
@@ -14,15 +14,15 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class ExternalHistoricalDataDeserializer implements JsonDeserializer<List<ExternalHistoricalData>> {
-    private final List<MetaData> availableMetaDataList;
+public class ExternalHistoricalDataDeserializer implements JsonDeserializer<List<ExternalFundHistoricalData>> {
+    private final List<FundMetaData> availableFundMetaDataList;
 
-    public ExternalHistoricalDataDeserializer(List<MetaData> availableMetaDataList) {
-        this.availableMetaDataList = availableMetaDataList;
+    public ExternalHistoricalDataDeserializer(List<FundMetaData> availableFundMetaDataList) {
+        this.availableFundMetaDataList = availableFundMetaDataList;
     }
 
     @Override
-    public List<ExternalHistoricalData> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public List<ExternalFundHistoricalData> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         // TODO: Refactoring required!
         // Find a better / efficient solution to generate List<FundPrice>
 
@@ -33,8 +33,8 @@ public class ExternalHistoricalDataDeserializer implements JsonDeserializer<List
 
         JsonElement data = obj.get("data");
 
-        Map<String, MetaData> fundsMap = availableMetaDataList.stream()
-                .collect(Collectors.toMap(MetaData::getCode, Function.identity()));
+        Map<String, FundMetaData> fundsMap = availableFundMetaDataList.stream()
+                .collect(Collectors.toMap(FundMetaData::getCode, Function.identity()));
 
         return data.getAsJsonArray()
                 .asList()
@@ -51,7 +51,7 @@ public class ExternalHistoricalDataDeserializer implements JsonDeserializer<List
                             .atZone(ZoneId.systemDefault())
                             .toLocalDate();
 
-                    return new ExternalHistoricalData(
+                    return new ExternalFundHistoricalData(
                             fundsMap.get(item.get("FONKODU").getAsString()),
                             item.get("TEDPAYSAYISI").getAsBigDecimal(),
                             item.get("KISISAYISI").getAsInt(),

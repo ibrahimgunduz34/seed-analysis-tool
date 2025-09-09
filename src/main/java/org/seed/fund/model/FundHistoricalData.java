@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @Getter
-public class HistoricalData {
+public class FundHistoricalData {
     private final Long id;
     private final BigDecimal numberOfShares;
     private final Integer numberOfInvestors;
@@ -18,13 +18,13 @@ public class HistoricalData {
     private final LocalDate valueDate;
     private final LocalDateTime createdAt;
 
-    public static HistoricalData create(
+    public static FundHistoricalData create(
             BigDecimal numberOfShares,
             Integer numberOfInvestors,
             BigDecimal totalValue,
             BigDecimal price,
             LocalDate valueDate)
     {
-        return new HistoricalData(null, numberOfShares, numberOfInvestors, totalValue, price, valueDate, LocalDateTime.now());
+        return new FundHistoricalData(null, numberOfShares, numberOfInvestors, totalValue, price, valueDate, LocalDateTime.now());
     }
 }

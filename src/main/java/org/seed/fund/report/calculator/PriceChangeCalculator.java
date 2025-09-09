@@ -1,6 +1,6 @@
 package org.seed.fund.report.calculator;
 
-import org.seed.fund.model.HistoricalData;
+import org.seed.fund.model.FundHistoricalData;
 import org.seed.fund.report.model.ReportContext;
 
 import java.math.BigDecimal;
@@ -11,13 +11,13 @@ import java.util.function.Function;
 public class PriceChangeCalculator implements Function<ReportContext,  ReportContext> {
     @Override
     public ReportContext apply(ReportContext ctx) {
-        List<HistoricalData> historicalData = ctx.getHistoricalDataList();
+        List<FundHistoricalData> fundHistoricalData = ctx.getFundHistoricalDataList();
 
-        BigDecimal startPrice = historicalData.stream().findFirst().map(HistoricalData::getPrice).orElse(BigDecimal.ZERO);
+        BigDecimal startPrice = fundHistoricalData.stream().findFirst().map(FundHistoricalData::getPrice).orElse(BigDecimal.ZERO);
 
-        BigDecimal endPrice = historicalData.isEmpty()
+        BigDecimal endPrice = fundHistoricalData.isEmpty()
                 ? BigDecimal.ZERO
-                : historicalData.get(historicalData.size() - 1).getPrice();
+                : fundHistoricalData.get(fundHistoricalData.size() - 1).getPrice();
 
 
         BigDecimal change = BigDecimal.ZERO;

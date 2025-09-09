@@ -1,10 +1,10 @@
 package org.seed.fund.service.persistence;
 
-import org.seed.fund.mapper.HistoricalDataMapper;
-import org.seed.fund.model.ExternalHistoricalData;
+import org.seed.fund.mapper.FundHistoricalDataMapper;
+import org.seed.fund.model.ExternalFundHistoricalData;
 import org.seed.fund.model.Fund;
-import org.seed.fund.model.HistoricalData;
-import org.seed.fund.model.MetaData;
+import org.seed.fund.model.FundHistoricalData;
+import org.seed.fund.model.FundMetaData;
 import org.seed.fund.storage.FundStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,30 +22,30 @@ public class HistoricalDataPersistenceImpl implements HistoricalDataPersistence 
     private final Logger logger = LoggerFactory.getLogger(HistoricalDataPersistenceImpl.class);
 
     private final FundStorage fundStorage;
-    private final HistoricalDataMapper historicalDataMapper;
+    private final FundHistoricalDataMapper fundHistoricalDataMapper;
 
-    public HistoricalDataPersistenceImpl(FundStorage fundStorage, HistoricalDataMapper historicalDataMapper) {
+    public HistoricalDataPersistenceImpl(FundStorage fundStorage, FundHistoricalDataMapper fundHistoricalDataMapper) {
         this.fundStorage = fundStorage;
-        this.historicalDataMapper = historicalDataMapper;
+        this.fundHistoricalDataMapper = fundHistoricalDataMapper;
     }
 
     @Transactional
     @Override
-    public void persist(LocalDate valueDate, List<ExternalHistoricalData> externalHistoricalData) {
+    public void persist(LocalDate valueDate, List<ExternalFundHistoricalData> externalFundHistoricalData) {
         List<Fund> fundsByValueDate = fundStorage.getFundsByValueDate(valueDate);
 
         List<String> synchronizedFunds = fundsByValueDate.stream()
-                .map(item -> item.getMetaData().getCode())
+                .map(item -> item.getFundMetaData().getCode())
                 .toList();
 
-        Map<String, MetaData> fundsMap = fundStorage.getMetaDataList().stream()
-                .collect(Collectors.toMap(MetaData::getCode, Function.identity()));
+        Map<String, FundMetaData> fundsMap = fundStorage.getMetaDataList().stream()
+                .collect(Collectors.toMap(FundMetaData::getCode, Function.identity()));
 
-        Map<String, List<HistoricalData>> groupedHistoricalData = externalHistoricalData.stream()
-                .filter(item -> !synchronizedFunds.contains(item.getMetaData().getCode()))
+        Map<String, List<FundHistoricalData>> groupedHistoricalData = externalFundHistoricalData.stream()
+                .filter(item -> !synchronizedFunds.contains(item.getFundMetaData().getCode()))
                 .collect(Collectors.groupingBy(
-                        item -> item.getMetaData().getCode(),
-                        Collectors.mapping(historicalDataMapper::toModel, Collectors.toList())
+                        item -> item.getFundMetaData().getCode(),
+                        Collectors.mapping(fundHistoricalDataMapper::toModel, Collectors.toList())
                 ));
 
         int createdCount = fundStorage.saveAll(groupedHistoricalData).size();

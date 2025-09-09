@@ -2,7 +2,7 @@ package org.seed.fund.service;
 
 import org.seed.exception.ExternalServiceConnectionFailure;
 import org.seed.fund.command.HistoricalDataListSyncAll;
-import org.seed.fund.model.ExternalHistoricalData;
+import org.seed.fund.model.ExternalFundHistoricalData;
 import org.seed.fund.model.ServiceResponse;
 import org.seed.fund.service.persistence.HistoricalDataPersistence;
 import org.seed.fund.service.provider.HistoricalDataService;
@@ -38,41 +38,41 @@ public class HistoricalDataSynchronizerImpl implements HistoricalDataSynchronize
 
     @Override
     public void synchronize(LocalDate valueDate) {
-        List<ExternalHistoricalData> externalHistoricalData = fetchData(valueDate);
+        List<ExternalFundHistoricalData> externalFundHistoricalData = fetchData(valueDate);
 
-        if (externalHistoricalData.isEmpty()) {
+        if (externalFundHistoricalData.isEmpty()) {
             logger.info("Historical data is already in sync");
             return;
         }
 
-        historicalDataPersistence.persist(valueDate, externalHistoricalData);
+        historicalDataPersistence.persist(valueDate, externalFundHistoricalData);
     }
 
     @Override
     public void synchronize(LocalDate beginDate, LocalDate endDate) {
-        List<ExternalHistoricalData> externalHistoricalData = collectHistoricalData(beginDate, endDate);
+        List<ExternalFundHistoricalData> externalFundHistoricalData = collectHistoricalData(beginDate, endDate);
 
-        if (externalHistoricalData.isEmpty()) {
+        if (externalFundHistoricalData.isEmpty()) {
             logger.info("Historical data is already in sync");
             return;
         }
 
-        Map<LocalDate, List<ExternalHistoricalData>> groupedExternalHistoricalData = externalHistoricalData.stream()
-                .collect(Collectors.groupingBy(ExternalHistoricalData::getValueDate));
+        Map<LocalDate, List<ExternalFundHistoricalData>> groupedExternalHistoricalData = externalFundHistoricalData.stream()
+                .collect(Collectors.groupingBy(ExternalFundHistoricalData::getValueDate));
 
         persistBatch(groupedExternalHistoricalData);
     }
 
-    private List<ExternalHistoricalData> collectHistoricalData(LocalDate beginDate, LocalDate endDate) {
+    private List<ExternalFundHistoricalData> collectHistoricalData(LocalDate beginDate, LocalDate endDate) {
         ExecutorService executor = Executors.newFixedThreadPool(FETCH_POOL_SIZE);
 
         try {
-            List<CompletableFuture<List<ExternalHistoricalData>>> futures = new ArrayList<>();
+            List<CompletableFuture<List<ExternalFundHistoricalData>>> futures = new ArrayList<>();
 
             for (LocalDate valueDate = beginDate; !valueDate.isAfter(endDate); valueDate = valueDate.plusDays(1)) {
                 final LocalDate requestDate = valueDate;
 
-                CompletableFuture<List<ExternalHistoricalData>> future = CompletableFuture
+                CompletableFuture<List<ExternalFundHistoricalData>> future = CompletableFuture
                         .supplyAsync(() -> {
                             try {
                                 Thread.sleep(800); // 500ms delay before calling fetchData
@@ -97,7 +97,7 @@ public class HistoricalDataSynchronizerImpl implements HistoricalDataSynchronize
         }
     }
 
-    private BiFunction<List<ExternalHistoricalData>, Throwable, List<ExternalHistoricalData>> handleBatchProviderResponse(LocalDate requestDate) {
+    private BiFunction<List<ExternalFundHistoricalData>, Throwable, List<ExternalFundHistoricalData>> handleBatchProviderResponse(LocalDate requestDate) {
         return (items, ex) -> {
             if (ex != null) {
                 // unwrap CompletionException to get the real cause
@@ -109,7 +109,7 @@ public class HistoricalDataSynchronizerImpl implements HistoricalDataSynchronize
                     logger.error("Unexpected error fetching historical data for {}: {}", requestDate, cause.toString());
                 }
                 // return empty list for this failed call
-                return List.<ExternalHistoricalData>of();
+                return List.<ExternalFundHistoricalData>of();
             } else {
                 logger.info("Collected {} item(s) for {}", items.size(), requestDate);
                 return items;
@@ -118,15 +118,15 @@ public class HistoricalDataSynchronizerImpl implements HistoricalDataSynchronize
     }
 
 
-    private List<ExternalHistoricalData> fetchData(LocalDate valueDate) {
-        ServiceResponse<List<ExternalHistoricalData>> providerResponse = historicalDataService.retrieveList(valueDate);
+    private List<ExternalFundHistoricalData> fetchData(LocalDate valueDate) {
+        ServiceResponse<List<ExternalFundHistoricalData>> providerResponse = historicalDataService.retrieveList(valueDate);
 
         return providerResponse.getData()
                 .orElseThrow(() -> new ExternalServiceConnectionFailure(providerResponse.getError()));
     }
 
     @SuppressWarnings("resource")
-    private void persistBatch(Map<LocalDate, List<ExternalHistoricalData>> entries) {
+    private void persistBatch(Map<LocalDate, List<ExternalFundHistoricalData>> entries) {
         ExecutorService executor = Executors.newFixedThreadPool(PERSISTENCE_POOL_SIZE);
 
         try {

@@ -1,6 +1,6 @@
 package org.seed.fund.report.calculator;
 
-import org.seed.fund.model.HistoricalData;
+import org.seed.fund.model.FundHistoricalData;
 import org.seed.fund.report.model.ReportContext;
 
 import java.math.BigDecimal;
@@ -13,21 +13,21 @@ import java.util.stream.IntStream;
 public class DailyChangeCalculator implements Function<ReportContext, ReportContext> {
     @Override
     public ReportContext apply(ReportContext ctx) {
-        List<HistoricalData> historicalDataList = ctx.getHistoricalDataList();
-        List<BigDecimal> changes = IntStream.range(1, historicalDataList.size())
-                .mapToObj(getBigDecimalIntFunction(historicalDataList))
+        List<FundHistoricalData> fundHistoricalDataList = ctx.getFundHistoricalDataList();
+        List<BigDecimal> changes = IntStream.range(1, fundHistoricalDataList.size())
+                .mapToObj(getBigDecimalIntFunction(fundHistoricalDataList))
                 .toList();
 
         ctx.setDailyChanges(changes);
-        ctx.setNumberOfDays(ctx.getHistoricalDataList().size());
+        ctx.setNumberOfDays(ctx.getFundHistoricalDataList().size());
 
         return ctx;
     }
 
-    private static IntFunction<BigDecimal> getBigDecimalIntFunction(List<HistoricalData> historicalDataList) {
+    private static IntFunction<BigDecimal> getBigDecimalIntFunction(List<FundHistoricalData> fundHistoricalDataList) {
         return i -> {
-            BigDecimal prev = historicalDataList.get(i - 1).getPrice();
-            BigDecimal current = historicalDataList.get(i).getPrice();
+            BigDecimal prev = fundHistoricalDataList.get(i - 1).getPrice();
+            BigDecimal current = fundHistoricalDataList.get(i).getPrice();
             if (prev.compareTo(BigDecimal.ZERO) == 0) {
                 return BigDecimal.ZERO;
             }

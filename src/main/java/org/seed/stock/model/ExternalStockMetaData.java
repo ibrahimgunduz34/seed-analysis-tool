@@ -1,15 +1,15 @@
-package org.seed.fund.model;
+package org.seed.stock.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.Currency;
 
-@AllArgsConstructor
 @Getter
-public class ExternalMetaData {
+@AllArgsConstructor
+public class ExternalStockMetaData {
     private final String code;
     private final String name;
-    private final String fundType;
+    private final String exchange;
     private final Currency currency;
 }

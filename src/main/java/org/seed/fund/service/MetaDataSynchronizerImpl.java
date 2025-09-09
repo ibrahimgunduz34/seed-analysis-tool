@@ -1,8 +1,8 @@
 package org.seed.fund.service;
 
-import org.seed.fund.mapper.MetaDataMapper;
-import org.seed.fund.model.ExternalMetaData;
-import org.seed.fund.model.MetaData;
+import org.seed.fund.mapper.FundMetaDataMapper;
+import org.seed.fund.model.ExternalFundMetaData;
+import org.seed.fund.model.FundMetaData;
 import org.seed.fund.service.provider.MetaDataService;
 import org.seed.fund.storage.FundStorage;
 import org.slf4j.Logger;
@@ -17,34 +17,34 @@ public class MetaDataSynchronizerImpl implements MetaDataSynchronizer {
 
     private final MetaDataService metaDataService;
     private final FundStorage fundStorage;
-    private final MetaDataMapper metaDataMapper;
+    private final FundMetaDataMapper fundMetaDataMapper;
 
-    public MetaDataSynchronizerImpl(MetaDataService metaDataService, FundStorage fundStorage, MetaDataMapper metaDataMapper) {
+    public MetaDataSynchronizerImpl(MetaDataService metaDataService, FundStorage fundStorage, FundMetaDataMapper fundMetaDataMapper) {
         this.metaDataService = metaDataService;
         this.fundStorage = fundStorage;
-        this.metaDataMapper = metaDataMapper;
+        this.fundMetaDataMapper = fundMetaDataMapper;
     }
 
     @Override
     public void synchronize() {
-        List<ExternalMetaData> externalMetaDataList = metaDataService.retrieveList()
+        List<ExternalFundMetaData> externalFundMetaDataList = metaDataService.retrieveList()
                 .getData()
                 .orElseThrow(() -> new RuntimeException("Failed to retrieve metadata list"));
 
-        List<String> existingMetaDataCodes = fundStorage.getMetaDataList().stream().map(MetaData::getCode).toList();
+        List<String> existingMetaDataCodes = fundStorage.getMetaDataList().stream().map(FundMetaData::getCode).toList();
 
-        List<MetaData> metaDataList = externalMetaDataList.stream()
+        List<FundMetaData> fundMetaDataList = externalFundMetaDataList.stream()
                 .filter(item -> !existingMetaDataCodes.contains(item.getCode()))
-                .map(metaDataMapper::toModel)
+                .map(fundMetaDataMapper::toModel)
                 .toList();
 
-        if (metaDataList.isEmpty()) {
+        if (fundMetaDataList.isEmpty()) {
             logger.info("Meta data is already in sync");
             return;
         }
 
-        fundStorage.saveAll(metaDataList);
+        fundStorage.saveAll(fundMetaDataList);
 
-        logger.info("Created " + metaDataList.size() + " item(s).");
+        logger.info("Created " + fundMetaDataList.size() + " item(s).");
     }
 }
