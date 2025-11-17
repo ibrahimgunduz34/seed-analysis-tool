@@ -1,43 +1,31 @@
 spring:
   jpa:
-#    database: mysql
     database: postgresql
-#    database-platform: org.hibernate.dialect.MariaDBDialect
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     defer-datasource-initialization: false
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
+        cache:
+          use_second_level_cache: true
+          use_query_cache: true
+          region:
+            factory_class: org.seed.ExposedRedissonRegionFactory
+          redisson:
+            config: src/main/resources/redisson.yaml
+            shutdown_on_session_factory_close: true
         jdbc:
           batch_size: 1000
         order_inserts: true
+  cache:
+    type: redis
+    redis:
+      time-to-live: 600000
+      cache-null-values: false
 
   datasource:
-#    url: jdbc:mariadb://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:appdb}?autoReconnect=true&useSSL=false
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:appdb}?autoReconnect=true&useSSL=false
     username: ${DB_USER:appuser}
     password: ${DB_PASSWORD:apppwd}
     driver-class-name: org.postgresql.Driver
-#    driver-class-name: org.mariadb.jdbc.Driver
-
-#logging:
-#  level:
-#    org.hibernate.SQL: DEBUG
-#    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-
-#logging:
-#  level:
-#    org.springframework.transaction: TRACE
-#    org.hibernate.SQL: DEBUG
-#    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-
-#logging:
-#  level:
-#    org:
-#      hibernate:
-#        SQL: DEBUG
-#        type:
-#          descriptor:
-#            sql:
-#              BasicBinder=TRACE:

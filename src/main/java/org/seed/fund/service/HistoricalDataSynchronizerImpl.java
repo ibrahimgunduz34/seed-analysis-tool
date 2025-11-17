@@ -1,5 +1,6 @@
 package org.seed.fund.service;
 
+import org.seed.common.HistoricalDataSynchronizer;
 import org.seed.exception.ExternalServiceConnectionFailure;
 import org.seed.fund.command.HistoricalDataListSyncAll;
 import org.seed.fund.model.ExternalFundHistoricalData;

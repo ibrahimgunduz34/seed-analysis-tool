@@ -10,7 +10,9 @@ public class TablePrinter implements Function<List<ReportContext>, List<ReportCo
     private static final String[] headers = {
             "Fon",
             "Positive Days",
+            "Positive Days (%)",
             "Negative Days",
+            "Negative Days (%)",
             "Average Gain (%)",
             "Average Loss (%)",
             "Stdev (%)",
@@ -43,8 +45,10 @@ public class TablePrinter implements Function<List<ReportContext>, List<ReportCo
             System.out.printf(
                     "%-22s".repeat(headers.length).concat("%n"),
                     ctx.getFundMetaData().getCode(),
-                    "%d %.2f%%".formatted(ctx.getNumberOfPositiveDays(), ctx.getWeightOfPositiveDays()),
-                    "%d %.2f%%".formatted(ctx.getNumberOfNegativeDays(), ctx.getWeightOfNegativeDays()),
+                    "%d".formatted(ctx.getNumberOfPositiveDays()),
+                    "%.2f%%".formatted(ctx.getWeightOfPositiveDays() * 100),
+                    "%d".formatted(ctx.getNumberOfNegativeDays()),
+                    "%.2f%%".formatted(ctx.getWeightOfNegativeDays() * 100),
                     "%.2f".formatted(BigDecimalMath.convertToPercentage(ctx.getAverageGain())),
                     "%.2f".formatted(BigDecimalMath.convertToPercentage(ctx.getAverageLoss())),
                     "%.2f".formatted(BigDecimalMath.convertToPercentage(ctx.getStandardDeviation())),

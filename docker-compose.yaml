@@ -1,25 +1,6 @@
 services:
-#  storage:
-#    image: mariadb:latest
-#    environment:
-#      MARIADB_ROOT_PASSWORD: root!
-#      MARIADB_USER: appuser
-#      MARIADB_PASSWORD: apppwd
-#      MARIADB_DATABASE: appdb
-#    ports:
-#      - 3306:3306
-#    healthcheck:
-##      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot!" ]
-#      test: /usr/bin/mariadb --user=root --password=$$MARIADB_ROOT_PASSWORD --execute="SHOW DATABASES"
-#      interval: 2s
-#      timeout: 120s
-#      retries: 15
-#      start_period: 30s
-#    volumes:
-#      - .data:/var/lib/mysql:Z
-
   pgsql:
-    image: postgres:latest
+    image: postgres:17.0
     environment:
       POSTGRES_USER: appuser
       POSTGRES_PASSWORD: apppwd
@@ -33,4 +14,31 @@ services:
       retries: 15
       start_period: 30s
     volumes:
-      - .data/postgresql:/var/lib/postgresql/data:Z
+      - postgresql_data:/var/lib/postgresql/data:Z
+
+  redis:
+    image: redis:8.2
+    ports:
+      - 6379:6379
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 2s
+      timeout: 120s
+      retries: 15
+      start_period: 30s
+#    volumes:
+#      - redis_data:/data:Z
+
+volumes:
+  postgresql_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/.data/postgresql
+      o: bind
+  redis_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/.data/redis
+      o: bind

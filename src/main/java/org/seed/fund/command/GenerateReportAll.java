@@ -1,5 +1,6 @@
 package org.seed.fund.command;
 
+import org.seed.config.FundPerformanceWeightConfig;
 import org.seed.fund.model.FundMetaData;
 import org.seed.fund.report.ReportGenerator;
 import org.seed.fund.report.model.ReportContext;
@@ -21,11 +22,13 @@ import java.util.stream.Collectors;
 public class GenerateReportAll implements CommandLineRunner {
     private final ReportGenerator reportGenerator;
     private final FundStorage fundStorage;
+    private final FundPerformanceWeightConfig weightConfig;
 
 
-    public GenerateReportAll(ReportGenerator reportGenerator, FundStorage fundStorage) {
+    public GenerateReportAll(ReportGenerator reportGenerator, FundStorage fundStorage, FundPerformanceWeightConfig weightConfig) {
         this.reportGenerator = reportGenerator;
         this.fundStorage = fundStorage;
+        this.weightConfig = weightConfig;
     }
 
     @Override
@@ -37,7 +40,7 @@ public class GenerateReportAll implements CommandLineRunner {
         Integer frequency = 30;
 
         CompositePrinter printer = new CompositePrinter(
-                new SharpeMddChartPrinter(),
+                new SharpeMddChartPrinter(weightConfig),
                 new ReportSummaryPrinter()
         );
 
@@ -60,6 +63,8 @@ public class GenerateReportAll implements CommandLineRunner {
             printer.apply(contexts);
 
             System.out.println("\n");
+
+            System.exit(0);
         });
     }
 }

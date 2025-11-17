@@ -24,3 +24,10 @@ logging.level.root: WARN
 logging.level.org.springframework.web: DEBUG
 logging.level.org.hibernate: ERROR
 logging.level.org.seed: INFO
+
+performance:
+  funds:
+    weight:
+      sharpe: 0.4
+      mdd: 0.4
+      return-pct: 0.2

@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Cacheable
 public class FundMetaDataEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

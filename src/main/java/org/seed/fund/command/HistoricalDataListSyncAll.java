@@ -1,7 +1,7 @@
 package org.seed.fund.command;
 
 
-import org.seed.fund.service.HistoricalDataSynchronizer;
+import org.seed.common.HistoricalDataSynchronizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;

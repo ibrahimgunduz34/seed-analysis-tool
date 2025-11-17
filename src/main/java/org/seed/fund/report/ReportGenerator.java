@@ -62,6 +62,7 @@ public class ReportGenerator {
 
         Function<ReportContext, ReportContext> pipeline = new DailyChangeCalculator()
                 .andThen(new PositiveNegativeDaysCalculator())
+                .andThen(new MeanCalculator())
                 .andThen(new GainLossCalculator())
                 .andThen(new StandardDeviationCalculator())
                 .andThen(new SharpeRatioCalculator())

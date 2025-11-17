@@ -13,8 +13,6 @@ public interface FundStorage {
     List<FundMetaData> getMetaDataList();
     List<Fund> getFundsByValueDate(LocalDate valueDate);
     List<FundHistoricalData> getHistoricalDataByDateRange(String code, LocalDate beginDate, LocalDate endDate);
-    FundMetaData save(FundMetaData fundMetaData);
     void saveAll(List<FundMetaData> fundMetaDataList);
-    FundHistoricalData save(FundMetaData fundMetaData, FundHistoricalData fundHistoricalData);
     List<FundHistoricalData> saveAll(Map<String, List<FundHistoricalData>> models);
 }

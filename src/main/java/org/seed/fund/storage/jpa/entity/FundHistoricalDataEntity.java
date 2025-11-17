@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Cacheable
 public class FundHistoricalDataEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

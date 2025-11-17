@@ -37,6 +37,7 @@ public class FundStorageImpl implements FundStorage {
         this.fundMapper = fundMapper;
     }
 
+    @Override
     public Fund getFundByCode(String code) {
         FundMetaDataEntity fundMetaDataEntity = fundMetaDataRepository
                 .findOneByCode(code)
@@ -60,6 +61,7 @@ public class FundStorageImpl implements FundStorage {
                 .toList();
     }
 
+    @Override
     public List<Fund> getFundsByValueDate(LocalDate valueDate) {
         return fundHistoricalDataRepository.findAllByValueDate(valueDate)
                 .stream()
@@ -75,12 +77,6 @@ public class FundStorageImpl implements FundStorage {
                 .toList();
     }
 
-    public FundMetaData save(FundMetaData fundMetaData) {
-        FundMetaDataEntity fundMetaDataEntity = fundMetaDataMapper.toEntity(fundMetaData);
-        FundMetaDataEntity createdMetaData = fundMetaDataRepository.save(fundMetaDataEntity);
-        return fundMetaDataMapper.toModel(createdMetaData);
-    }
-
     @Transactional
     @Override
     public void saveAll(List<FundMetaData> fundMetaDataList) {
@@ -89,13 +85,6 @@ public class FundStorageImpl implements FundStorage {
                 .toList();
 
         fundMetaDataRepository.saveAll(entities);
-    }
-
-    @Override
-    public FundHistoricalData save(FundMetaData fundMetaData, FundHistoricalData fundHistoricalData) {
-        FundHistoricalDataEntity fundHistoricalDataEntity = fundHistoricalDataMapper.toEntity(fundMetaData, fundHistoricalData);
-        FundHistoricalDataEntity entity = fundHistoricalDataRepository.save(fundHistoricalDataEntity);
-        return fundHistoricalDataMapper.toModel(entity);
     }
 
     @Override
@@ -113,5 +102,4 @@ public class FundStorageImpl implements FundStorage {
 
         return fundHistoricalDataMapper.toModel(fundHistoricalDataRepository.saveAll(entities));
     }
-
 }

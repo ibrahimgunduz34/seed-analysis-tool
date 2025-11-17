@@ -1,6 +1,6 @@
 package org.seed.fund.command;
 
-import org.seed.fund.service.MetaDataSynchronizer;
+import org.seed.common.MetaDataSynchronizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;

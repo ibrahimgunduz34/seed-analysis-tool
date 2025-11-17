@@ -1,5 +1,6 @@
 package org.seed.fund.report.printer;
 
+import org.seed.config.FundPerformanceWeightConfig;
 import org.seed.fund.report.model.ReportContext;
 
 import java.math.BigDecimal;
@@ -7,6 +8,12 @@ import java.util.List;
 import java.util.function.Function;
 
 public class SharpeMddChartPrinter implements Function<List<ReportContext>, List<ReportContext>> {
+    private final FundPerformanceWeightConfig weightConfig;
+
+    public SharpeMddChartPrinter(FundPerformanceWeightConfig weightConfig) {
+        this.weightConfig = weightConfig;
+    }
+
     @Override
     public List<ReportContext> apply(List<ReportContext> contexts) {
         printChart(contexts);
@@ -76,7 +83,7 @@ public class SharpeMddChartPrinter implements Function<List<ReportContext>, List
         double returnNorm = (returnPct - minReturn) / (maxReturn - minReturn + 1e-6);
 
         // Ağırlıklar: Sharpe %40, MDD %40, Getiri %20
-        return 0.4 * sharpeNorm + 0.4 * mddNorm + 0.2 * returnNorm;
+        return weightConfig.getSharpe() * sharpeNorm + weightConfig.getMdd() * mddNorm + weightConfig.getReturnPct() * returnNorm;
     }
 
     private double safeDouble(BigDecimal value) {

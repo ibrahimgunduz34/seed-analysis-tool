@@ -1,5 +1,6 @@
 package org.seed.fund.service;
 
+import org.seed.common.MetaDataSynchronizer;
 import org.seed.fund.mapper.FundMetaDataMapper;
 import org.seed.fund.model.ExternalFundMetaData;
 import org.seed.fund.model.FundMetaData;

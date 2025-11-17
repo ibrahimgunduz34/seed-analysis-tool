@@ -1,4 +1,4 @@
-package org.seed.fund.service;
+package org.seed.common;
 
 import java.time.LocalDate;
 
