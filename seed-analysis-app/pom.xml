@@ -16,10 +16,10 @@
             <groupId>com.seed</groupId>
             <artifactId>seed-analysis-core</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.seed</groupId>
-            <artifactId>seed-analysis-fund</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.seed</groupId>-->
+<!--            <artifactId>seed-analysis-fund</artifactId>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>

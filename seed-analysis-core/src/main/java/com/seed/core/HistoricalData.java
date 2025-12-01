@@ -1,9 +1,7 @@
 package com.seed.core;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.util.List;
 
-public interface HistoricalData {
-    LocalDate getDate();
-    BigDecimal getPrice();
-}
+public record HistoricalData<T extends Candle>(
+        List<T> candles
+) {}
