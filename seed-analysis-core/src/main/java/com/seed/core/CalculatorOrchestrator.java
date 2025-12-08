@@ -2,12 +2,12 @@ package com.seed.core;
 
 import com.seed.core.calculator.Calculator;
 import com.seed.core.exception.IllegalAccessException;
-import com.seed.core.model.Candle;
+import com.seed.core.model.HistoricalData;
 import com.seed.core.model.ResultKey;
 
 import java.util.List;
 
-public class CalculatorOrchestrator<C extends Candle> {
+public class CalculatorOrchestrator<C extends HistoricalData> {
     private final List<Calculator<C>> steps;
 
     public CalculatorOrchestrator(List<Calculator<C>> steps) {

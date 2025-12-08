@@ -1,9 +1,10 @@
 package com.seed.fund.model;
 
 import com.seed.core.model.Asset;
-import com.seed.core.model.HistoricalData;
+
+import java.util.List;
 
 public record Fund(
         FundMetaData getMetaData,
-        HistoricalData<FundCandle> historicalData
-) implements Asset<FundMetaData, FundCandle> {}
+        List<FundHistoricalData> historicalData
+) implements Asset<FundMetaData, FundHistoricalData> {}

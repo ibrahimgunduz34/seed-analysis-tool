@@ -1,15 +1,14 @@
 package com.seed.fund.provider;
 
 import com.seed.core.DataProvider;
-import com.seed.core.model.HistoricalData;
 import com.seed.core.model.ServiceResponse;
 import com.seed.fund.model.ExternalFundMetaData;
-import com.seed.fund.model.FundCandle;
+import com.seed.fund.model.FundHistoricalData;
 
 import java.time.LocalDate;
 import java.util.List;
 
-public class TefasDataProvider implements DataProvider<ExternalFundMetaData, HistoricalData<FundCandle>> {
+public class TefasDataProvider implements DataProvider<ExternalFundMetaData, FundHistoricalData> {
     private final MetaDataListExporter metaDataListExporter;
 
     public TefasDataProvider(MetaDataListExporter metaDataListExporter) {
@@ -22,7 +21,7 @@ public class TefasDataProvider implements DataProvider<ExternalFundMetaData, His
     }
 
     @Override
-    public ServiceResponse<List<HistoricalData<FundCandle>>> exportHistoricalData(LocalDate valueDate) {
+    public ServiceResponse<List<FundHistoricalData>> exportHistoricalData(LocalDate valueDate) {
         return null;
     }
 }

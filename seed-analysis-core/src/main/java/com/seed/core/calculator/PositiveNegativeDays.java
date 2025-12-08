@@ -1,7 +1,7 @@
 package com.seed.core.calculator;
 
 import com.seed.core.AnalysisContext;
-import com.seed.core.model.Candle;
+import com.seed.core.model.HistoricalData;
 import com.seed.core.model.ResultKey;
 
 import java.math.BigDecimal;
@@ -11,7 +11,7 @@ import java.util.Optional;
 
 import static com.seed.core.calculator.DailyPriceChange.DAILY_PRICE_CHANGE;
 
-public class PositiveNegativeDays<C extends Candle> implements Calculator<C> {
+public class PositiveNegativeDays<H extends HistoricalData> implements Calculator<H> {
     public static final ResultKey<Integer> NUMBER_OF_POSITIVE_DAYS = ResultKey.of("Number Of Positive Days", Integer.class);
     public static final ResultKey<Integer> NUMBER_OF_NEGATIVE_DAYS = ResultKey.of("Number Of Negative Days", Integer.class);
     public static final ResultKey<Double> WEIGHT_OF_POSITIVE_DAYS = ResultKey.of("Weight Of Positive Days", Double.class);
@@ -35,7 +35,7 @@ public class PositiveNegativeDays<C extends Candle> implements Calculator<C> {
     }
 
     @Override
-    public Map<ResultKey<?>, Object> calculate(AnalysisContext<?, C> ctx) {
+    public Map<ResultKey<?>, Object> calculate(AnalysisContext<?, H> ctx) {
         Optional<List<BigDecimal>> dailyPriceChangesOpt = ctx.get(DAILY_PRICE_CHANGE);
 
         if (dailyPriceChangesOpt.isEmpty()) {
@@ -46,8 +46,8 @@ public class PositiveNegativeDays<C extends Candle> implements Calculator<C> {
 
         int numberOfPositiveDays = 0;
         int numberOfNegativeDays = 0;
-        double weightOfPositiveDays = 0.0;
-        double weightOfNegativeDays = 0.0;
+        double weightOfPositiveDays;
+        double weightOfNegativeDays;
 
         for (BigDecimal dailyChange : dailyPriceChanges) {
             if (dailyChange.signum() > 0) {

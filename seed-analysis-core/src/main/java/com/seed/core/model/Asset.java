@@ -1,6 +1,8 @@
 package com.seed.core.model;
 
-public interface Asset<M extends MetaData, C extends Candle> {
+import java.util.List;
+
+public interface Asset<M extends MetaData, H extends HistoricalData> {
     M getMetaData();
-    HistoricalData<C> historicalData();
+    List<H> historicalData();
 }

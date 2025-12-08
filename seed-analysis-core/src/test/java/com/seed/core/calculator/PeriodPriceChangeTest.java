@@ -1,7 +1,6 @@
 package com.seed.core.calculator;
 
 import com.seed.core.AnalysisContext;
-import com.seed.core.model.Candle;
 import com.seed.core.model.HistoricalData;
 import com.seed.core.model.MetaData;
 import com.seed.core.model.ResultKey;
@@ -21,7 +20,8 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class PeriodPriceChangeTest {
-    private PeriodPriceChange<Candle> calculator;
+    private PeriodPriceChange<HistoricalData> calculator;
+    private static final LocalDate DEFAULT_DATE = LocalDate.of(2023, 1, 1);
 
     @BeforeEach
     void setUp() {
@@ -55,9 +55,9 @@ class PeriodPriceChangeTest {
             name = "PeriodPriceChangeTest.calculate() : should calculate price change in the period - {0}"
     )
     @MethodSource("getPriceData")
-    void calculateWithFalling(String caseName, List<Candle> priceData, BigDecimal expectedValue) {
+    void calculateWithFalling(String caseName, List<HistoricalData> priceData, BigDecimal expectedValue) {
         MetaData metaData = Mockito.mock(MetaData.class);
-        AnalysisContext<MetaData, Candle> ctx = new AnalysisContext<>(metaData, new HistoricalData<>(priceData));
+        AnalysisContext<MetaData, HistoricalData> ctx = new AnalysisContext<>(metaData, priceData, DEFAULT_DATE, DEFAULT_DATE);
 
         Map<ResultKey<?>, Object> result = calculator.calculate(ctx);
 

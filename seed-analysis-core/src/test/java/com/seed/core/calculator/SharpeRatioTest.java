@@ -1,7 +1,6 @@
 package com.seed.core.calculator;
 
 import com.seed.core.AnalysisContext;
-import com.seed.core.model.Candle;
 import com.seed.core.model.HistoricalData;
 import com.seed.core.model.MetaData;
 import com.seed.core.model.ResultKey;
@@ -11,13 +10,15 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SharpeRatioTest {
-    private SharpeRatio<Candle> calculator;
+    private SharpeRatio<HistoricalData> calculator;
+    private static final LocalDate DEFAULT_DATE = LocalDate.of(2023, 1, 1);
 
     @BeforeEach
     void setUp() {
@@ -28,7 +29,7 @@ class SharpeRatioTest {
     @DisplayName("SharpeRatio.calculate() : should calculate sharpe ratio")
     void calculate() {
         MetaData metaData = Mockito.mock(MetaData.class);
-        AnalysisContext<MetaData, Candle> ctx = new AnalysisContext<>(metaData, new HistoricalData<>(List.of()));
+        AnalysisContext<MetaData, HistoricalData> ctx = new AnalysisContext<>(metaData, List.of(), DEFAULT_DATE, DEFAULT_DATE);
 
         ctx.putIfAbsent(Mean.MEAN, BigDecimal.valueOf(0.122222222));
         ctx.putIfAbsent(StDev.ST_DEV, BigDecimal.valueOf(0.4220759979));

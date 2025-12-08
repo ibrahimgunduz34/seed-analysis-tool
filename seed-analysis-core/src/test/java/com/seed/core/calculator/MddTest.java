@@ -1,7 +1,6 @@
 package com.seed.core.calculator;
 
 import com.seed.core.AnalysisContext;
-import com.seed.core.model.Candle;
 import com.seed.core.model.HistoricalData;
 import com.seed.core.model.MetaData;
 import com.seed.core.model.ResultKey;
@@ -18,7 +17,8 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MddTest {
-    private Mdd<Candle> calculator;
+    private Mdd<HistoricalData> calculator;
+    private static final LocalDate DEFAULT_DATE = LocalDate.of(2023, 1, 1);
 
     @BeforeEach
     void setUp() {
@@ -29,12 +29,12 @@ class MddTest {
     @DisplayName("Mdd.calculate() : should calculate mdd")
     void calculate() {
         MetaData metaData = Mockito.mock(MetaData.class);
-        AnalysisContext<MetaData, Candle> ctx = new AnalysisContext<>(metaData, new HistoricalData<>(List.of(
+        AnalysisContext<MetaData, HistoricalData> ctx = new AnalysisContext<>(metaData, List.of(
                 new DummyCandle(LocalDate.now(), BigDecimal.valueOf(100)),
                 new DummyCandle(LocalDate.now(), BigDecimal.valueOf(150)),
                 new DummyCandle(LocalDate.now(), BigDecimal.valueOf(180)),
                 new DummyCandle(LocalDate.now(), BigDecimal.valueOf(130))
-        )));
+        ), DEFAULT_DATE, DEFAULT_DATE);
 
         Map<ResultKey<?>, Object> result = calculator.calculate(ctx);
 

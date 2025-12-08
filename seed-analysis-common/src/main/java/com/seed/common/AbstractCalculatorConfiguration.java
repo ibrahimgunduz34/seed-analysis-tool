@@ -1,5 +1,6 @@
 package com.seed.common;
 
+import com.seed.core.AssetAnalyzer;
 import com.seed.core.CalculatorOrchestrator;
 import com.seed.core.calculator.DailyPriceChange;
 import com.seed.core.calculator.GainLoss;
@@ -10,70 +11,73 @@ import com.seed.core.calculator.PositiveNegativeDays;
 import com.seed.core.calculator.SharpeRatio;
 import com.seed.core.calculator.Sortino;
 import com.seed.core.calculator.StDev;
-import com.seed.core.model.Candle;
+import com.seed.core.model.HistoricalData;
+import com.seed.core.model.MetaData;
+import com.seed.core.storage.HistoricalDataStorage;
+import com.seed.core.storage.MetaDataStorage;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
 @Configuration
-abstract public class AbstractCalculatorConfiguration<C extends Candle> {
+public abstract class AbstractCalculatorConfiguration<M extends MetaData, H extends HistoricalData> {
     @Bean
-    public DailyPriceChange<C> dailyPriceChange() {
+    public DailyPriceChange<H> dailyPriceChange() {
         return new DailyPriceChange<>();
     }
 
     @Bean
-    public GainLoss<C> gainLoss() {
+    public GainLoss<H> gainLoss() {
         return new GainLoss<>();
     }
 
     @Bean
-    public Mdd<C> mdd() {
+    public Mdd<H> mdd() {
         return new Mdd<>();
     }
 
     @Bean
-    public Mean<C> mean() {
+    public Mean<H> mean() {
         return new Mean<>();
     }
 
     @Bean
-    public PeriodPriceChange<C> periodPriceChange() {
+    public PeriodPriceChange<H> periodPriceChange() {
         return new PeriodPriceChange<>();
     }
 
     @Bean
-    public PositiveNegativeDays<C> positiveNegativeDays() {
+    public PositiveNegativeDays<H> positiveNegativeDays() {
         return new PositiveNegativeDays<>();
     }
 
     @Bean
-    public SharpeRatio<C> sharpeRatio() {
+    public SharpeRatio<H> sharpeRatio() {
         return new SharpeRatio<>();
     }
 
     @Bean
-    public Sortino<C> sortino() {
+    public Sortino<H> sortino() {
         return new Sortino<>();
     }
 
     @Bean
-    public StDev<C> stDev() {
+    public StDev<H> stDev() {
         return new StDev<>();
     }
 
     @Bean
-    public CalculatorOrchestrator<C> calculatorOrchestrator(
-            DailyPriceChange<C> dailyPriceChange,
-            PositiveNegativeDays<C> positiveNegativeDays,
-            GainLoss<C> gainLoss,
-            Mean<C> mean,
-            Mdd<C> mdd,
-            PeriodPriceChange<C> periodPriceChange,
-            StDev<C> stDev,
-            SharpeRatio<C> sharpeRatio,
-            Sortino<C> sortino
+    public CalculatorOrchestrator<H> calculatorOrchestrator(
+            DailyPriceChange<H> dailyPriceChange,
+            PositiveNegativeDays<H> positiveNegativeDays,
+            GainLoss<H> gainLoss,
+            Mean<H> mean,
+            Mdd<H> mdd,
+            PeriodPriceChange<H> periodPriceChange,
+            StDev<H> stDev,
+            SharpeRatio<H> sharpeRatio,
+            Sortino<H> sortino
     ) {
         return new CalculatorOrchestrator<>(List.of(
                 dailyPriceChange,
@@ -86,5 +90,17 @@ abstract public class AbstractCalculatorConfiguration<C extends Candle> {
                 sharpeRatio,
                 sortino
         ));
+    }
+
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    @Bean
+    public AssetAnalyzer<M, H> assetAnalyzer(CalculatorOrchestrator<H> calculatorOrchestrator,
+                                             MetaDataStorage<M> metaDataStorage,
+                                             HistoricalDataStorage<M, H> historicalData) {
+        return new AssetAnalyzer<>(
+                calculatorOrchestrator,
+                metaDataStorage,
+                historicalData
+        );
     }
 }

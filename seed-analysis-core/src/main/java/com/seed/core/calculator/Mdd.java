@@ -1,7 +1,7 @@
 package com.seed.core.calculator;
 
 import com.seed.core.AnalysisContext;
-import com.seed.core.model.Candle;
+import com.seed.core.model.HistoricalData;
 import com.seed.core.model.ResultKey;
 
 import java.math.BigDecimal;
@@ -9,7 +9,7 @@ import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 
-public class Mdd<C extends Candle> implements Calculator<C> {
+public class Mdd<H extends HistoricalData> implements Calculator<H> {
     public static final ResultKey<BigDecimal> MDD = ResultKey.of("MDD", BigDecimal.class);
 
     @Override
@@ -23,18 +23,18 @@ public class Mdd<C extends Candle> implements Calculator<C> {
     }
 
     @Override
-    public Map<ResultKey<?>, Object> calculate(AnalysisContext<?, C> ctx) {
-        List<C> candles = ctx.getHistoricalData().candles();
+    public Map<ResultKey<?>, Object> calculate(AnalysisContext<?, H> ctx) {
+        List<H> candles = ctx.getHistoricalData();
         if (candles.isEmpty()) {
             return Map.of();
         }
 
         BigDecimal peak = candles.stream()
-                .findFirst().map(Candle::price).orElse(BigDecimal.ZERO);
+                .findFirst().map(HistoricalData::price).orElse(BigDecimal.ZERO);
 
         BigDecimal mdd = BigDecimal.ZERO;
 
-        for (Candle candle : candles) {
+        for (HistoricalData candle : candles) {
             BigDecimal price = candle.price();
             if (price.compareTo(peak) > 0) {
                 peak = price;

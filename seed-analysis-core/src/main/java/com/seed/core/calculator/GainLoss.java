@@ -1,7 +1,7 @@
 package com.seed.core.calculator;
 
 import com.seed.core.AnalysisContext;
-import com.seed.core.model.Candle;
+import com.seed.core.model.HistoricalData;
 import com.seed.core.model.ResultKey;
 
 import java.math.BigDecimal;
@@ -14,7 +14,7 @@ import static com.seed.core.calculator.DailyPriceChange.DAILY_PRICE_CHANGE;
 import static com.seed.core.calculator.PositiveNegativeDays.NUMBER_OF_NEGATIVE_DAYS;
 import static com.seed.core.calculator.PositiveNegativeDays.NUMBER_OF_POSITIVE_DAYS;
 
-public class GainLoss<C extends Candle> implements Calculator<C> {
+public class GainLoss<H extends HistoricalData> implements Calculator<H> {
     public static final ResultKey<BigDecimal> AVERAGE_GAIN = ResultKey.of("Average Gain", BigDecimal.class);
     public static final ResultKey<BigDecimal> AVERAGE_LOSS = ResultKey.of("Average Loss", BigDecimal.class);
 
@@ -36,7 +36,7 @@ public class GainLoss<C extends Candle> implements Calculator<C> {
     }
 
     @Override
-    public Map<ResultKey<?>, Object> calculate(AnalysisContext<?, C> ctx) {
+    public Map<ResultKey<?>, Object> calculate(AnalysisContext<?, H> ctx) {
         Optional<List<BigDecimal>> dailyPriceChangesOpt = ctx.get(DAILY_PRICE_CHANGE);
 
         if (dailyPriceChangesOpt.isEmpty()) {

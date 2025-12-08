@@ -32,6 +32,7 @@
         <assertj-core.version>3.27.6</assertj-core.version>
         <postgresql.version>42.7.7</postgresql.version>
         <h2.version>2.3.232</h2.version>
+        <asciitable.version>0.3.2</asciitable.version>
     </properties>
 
     <dependencyManagement>
@@ -61,6 +62,11 @@
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>${postgresql.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.vandermeer</groupId>
+                <artifactId>asciitable</artifactId>
+                <version>${asciitable.version}</version>
             </dependency>
 
             <!-- test dependencies -->

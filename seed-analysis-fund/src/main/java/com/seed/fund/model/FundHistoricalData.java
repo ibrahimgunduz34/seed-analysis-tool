@@ -1,11 +1,11 @@
 package com.seed.fund.model;
 
-import com.seed.core.model.Candle;
+import com.seed.core.model.HistoricalData;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public record FundCandle(
+public record FundHistoricalData(
         LocalDate date,
         BigDecimal price
-) implements Candle {}
+) implements HistoricalData {}
