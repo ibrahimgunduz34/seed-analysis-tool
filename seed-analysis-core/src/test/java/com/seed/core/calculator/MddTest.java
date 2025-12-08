@@ -1,11 +1,14 @@
 package com.seed.core.calculator;
 
 import com.seed.core.AnalysisContext;
-import com.seed.core.HistoricalData;
-import com.seed.core.ResultKey;
+import com.seed.core.model.Candle;
+import com.seed.core.model.HistoricalData;
+import com.seed.core.model.MetaData;
+import com.seed.core.model.ResultKey;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -15,7 +18,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MddTest {
-    private Mdd<DummyCandle> calculator;
+    private Mdd<Candle> calculator;
 
     @BeforeEach
     void setUp() {
@@ -25,7 +28,8 @@ class MddTest {
     @Test
     @DisplayName("Mdd.calculate() : should calculate mdd")
     void calculate() {
-        AnalysisContext<DummyCandle> ctx = new AnalysisContext<>(new HistoricalData<>(List.of(
+        MetaData metaData = Mockito.mock(MetaData.class);
+        AnalysisContext<MetaData, Candle> ctx = new AnalysisContext<>(metaData, new HistoricalData<>(List.of(
                 new DummyCandle(LocalDate.now(), BigDecimal.valueOf(100)),
                 new DummyCandle(LocalDate.now(), BigDecimal.valueOf(150)),
                 new DummyCandle(LocalDate.now(), BigDecimal.valueOf(180)),

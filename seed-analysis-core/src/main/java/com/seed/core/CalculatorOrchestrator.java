@@ -1,20 +1,20 @@
-package com.seed.core.calculator;
+package com.seed.core;
 
-import com.seed.core.AnalysisContext;
-import com.seed.core.Candle;
-import com.seed.core.ResultKey;
+import com.seed.core.calculator.Calculator;
 import com.seed.core.exception.IllegalAccessException;
+import com.seed.core.model.Candle;
+import com.seed.core.model.ResultKey;
 
 import java.util.List;
 
-public class Orchestrator<T extends Candle> {
-    private final List<Calculator<T>> steps;
+public class CalculatorOrchestrator<C extends Candle> {
+    private final List<Calculator<C>> steps;
 
-    public Orchestrator(List<Calculator<T>> steps) {
+    public CalculatorOrchestrator(List<Calculator<C>> steps) {
         this.steps = steps;
     }
 
-    public void run(AnalysisContext<T> ctx) {
+    public void run(AnalysisContext<?, C> ctx) {
         for (var calculator : steps) {
             for (ResultKey<?> req : calculator.produces()) {
                 if (ctx.get(req).isEmpty()) {

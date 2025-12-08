@@ -1,8 +1,8 @@
 package com.seed.core.calculator;
 
 import com.seed.core.AnalysisContext;
-import com.seed.core.Candle;
-import com.seed.core.ResultKey;
+import com.seed.core.model.Candle;
+import com.seed.core.model.ResultKey;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -12,7 +12,7 @@ import java.util.Map;
 import static com.seed.core.calculator.Mean.MEAN;
 import static com.seed.core.calculator.StDev.ST_DEV;
 
-public class SharpeRatio<T extends Candle> implements Calculator<T> {
+public class SharpeRatio<C extends Candle> implements Calculator<C> {
     public static final ResultKey<BigDecimal> SHARPE_RATIO = ResultKey.of("Sharpe Ratio", BigDecimal.class);
 
     @Override
@@ -31,7 +31,7 @@ public class SharpeRatio<T extends Candle> implements Calculator<T> {
     }
 
     @Override
-    public Map<ResultKey<?>, Object> calculate(AnalysisContext<T> ctx) {
+    public Map<ResultKey<?>, Object> calculate(AnalysisContext<?, C> ctx) {
         BigDecimal stDev = ctx.get(ST_DEV).orElse(BigDecimal.ZERO);
         BigDecimal mean = ctx.get(MEAN).orElse(BigDecimal.ZERO);
 

@@ -1,8 +1,8 @@
 package com.seed.core.calculator;
 
 import com.seed.core.AnalysisContext;
-import com.seed.core.Candle;
-import com.seed.core.ResultKey;
+import com.seed.core.model.Candle;
+import com.seed.core.model.ResultKey;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.Optional;
 
 import static com.seed.core.calculator.DailyPriceChange.DAILY_PRICE_CHANGE;
 
-public class PositiveNegativeDays<T extends Candle> implements Calculator<T> {
+public class PositiveNegativeDays<C extends Candle> implements Calculator<C> {
     public static final ResultKey<Integer> NUMBER_OF_POSITIVE_DAYS = ResultKey.of("Number Of Positive Days", Integer.class);
     public static final ResultKey<Integer> NUMBER_OF_NEGATIVE_DAYS = ResultKey.of("Number Of Negative Days", Integer.class);
     public static final ResultKey<Double> WEIGHT_OF_POSITIVE_DAYS = ResultKey.of("Weight Of Positive Days", Double.class);
@@ -35,7 +35,7 @@ public class PositiveNegativeDays<T extends Candle> implements Calculator<T> {
     }
 
     @Override
-    public Map<ResultKey<?>, Object> calculate(AnalysisContext<T> ctx) {
+    public Map<ResultKey<?>, Object> calculate(AnalysisContext<?, C> ctx) {
         Optional<List<BigDecimal>> dailyPriceChangesOpt = ctx.get(DAILY_PRICE_CHANGE);
 
         if (dailyPriceChangesOpt.isEmpty()) {

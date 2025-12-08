@@ -1,4 +1,4 @@
-package com.seed.core;
+package com.seed.core.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

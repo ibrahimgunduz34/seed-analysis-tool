@@ -1,15 +1,15 @@
 package com.seed.core.calculator;
 
 import com.seed.core.AnalysisContext;
-import com.seed.core.Candle;
-import com.seed.core.ResultKey;
+import com.seed.core.model.Candle;
+import com.seed.core.model.ResultKey;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 
-public class Mdd<T extends Candle> implements Calculator<T> {
+public class Mdd<C extends Candle> implements Calculator<C> {
     public static final ResultKey<BigDecimal> MDD = ResultKey.of("MDD", BigDecimal.class);
 
     @Override
@@ -23,8 +23,8 @@ public class Mdd<T extends Candle> implements Calculator<T> {
     }
 
     @Override
-    public Map<ResultKey<?>, Object> calculate(AnalysisContext<T> ctx) {
-        List<T> candles = ctx.getHistoricalData().candles();
+    public Map<ResultKey<?>, Object> calculate(AnalysisContext<?, C> ctx) {
+        List<C> candles = ctx.getHistoricalData().candles();
         if (candles.isEmpty()) {
             return Map.of();
         }

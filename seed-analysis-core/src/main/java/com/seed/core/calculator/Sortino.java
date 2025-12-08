@@ -1,8 +1,8 @@
 package com.seed.core.calculator;
 
 import com.seed.core.AnalysisContext;
-import com.seed.core.Candle;
-import com.seed.core.ResultKey;
+import com.seed.core.model.Candle;
+import com.seed.core.model.ResultKey;
 import com.seed.core.util.BigDecimalMath;
 
 import java.math.BigDecimal;
@@ -15,7 +15,7 @@ import static com.seed.core.calculator.DailyPriceChange.DAILY_PRICE_CHANGE;
 import static com.seed.core.calculator.Mean.MEAN;
 import static com.seed.core.calculator.PositiveNegativeDays.NUMBER_OF_NEGATIVE_DAYS;
 
-public class Sortino<T extends Candle> implements Calculator<T> {
+public class Sortino<C extends Candle> implements Calculator<C> {
     public static final ResultKey<BigDecimal> SORTINO = ResultKey.of("Sortino", BigDecimal.class);
 
     private static final BigDecimal TARGET_RETURN = BigDecimal.ZERO;
@@ -37,7 +37,7 @@ public class Sortino<T extends Candle> implements Calculator<T> {
     }
 
     @Override
-    public Map<ResultKey<?>, Object> calculate(AnalysisContext<T> ctx) {
+    public Map<ResultKey<?>, Object> calculate(AnalysisContext<?, C> ctx) {
         Optional<List<BigDecimal>> dailyPriceChangesOpt = ctx.get(DAILY_PRICE_CHANGE);
 
         if (dailyPriceChangesOpt.isEmpty()) {

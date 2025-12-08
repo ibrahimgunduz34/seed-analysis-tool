@@ -1,22 +1,24 @@
 package com.seed.core.calculator;
 
 import com.seed.core.AnalysisContext;
-import com.seed.core.HistoricalData;
-import com.seed.core.ResultKey;
+import com.seed.core.model.Candle;
+import com.seed.core.model.HistoricalData;
+import com.seed.core.model.MetaData;
+import com.seed.core.model.ResultKey;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MeanTest {
-    private Mean<DummyCandle> calculator;
+    private Mean<Candle> calculator;
 
     @BeforeEach
     void setUp() {
@@ -26,7 +28,8 @@ class MeanTest {
     @Test
     @DisplayName("Mean.calculate() : should calculate mean of daily price change")
     void calculate() {
-        AnalysisContext<DummyCandle> ctx = new AnalysisContext<>(new HistoricalData<>(List.of()));
+        MetaData metaData = Mockito.mock(MetaData.class);
+        AnalysisContext<MetaData, Candle> ctx = new AnalysisContext<>(metaData, new HistoricalData<>(List.of()));
 
         ctx.putIfAbsent(DailyPriceChange.DAILY_PRICE_CHANGE, List.of(
                 BigDecimal.valueOf(0.5).setScale(10, RoundingMode.HALF_UP),

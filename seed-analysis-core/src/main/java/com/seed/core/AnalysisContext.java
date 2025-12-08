@@ -1,14 +1,21 @@
 package com.seed.core;
 
+import com.seed.core.model.Candle;
+import com.seed.core.model.HistoricalData;
+import com.seed.core.model.MetaData;
+import com.seed.core.model.ResultKey;
+
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.Optional;
 
-public class AnalysisContext<T extends Candle> {
+public class AnalysisContext<M extends MetaData, C extends Candle> {
     private final HashMap<ResultKey<?>, Object> results = new HashMap<>();
-    private final HistoricalData<T> historicalData;
+    private final M metaData;
+    private final HistoricalData<C> historicalData;
 
-    public AnalysisContext(HistoricalData<T> historicalData) {
+    public AnalysisContext(M metaData, HistoricalData<C> historicalData) {
+        this.metaData = metaData;
         this.historicalData = historicalData;
     }
 
@@ -26,7 +33,9 @@ public class AnalysisContext<T extends Candle> {
         return results.putIfAbsent(key, value) == null;
     }
 
-    public HistoricalData<T> getHistoricalData() {
+    public M getMetaData() { return metaData; }
+
+    public HistoricalData<C> getHistoricalData() {
         return historicalData;
     }
 }

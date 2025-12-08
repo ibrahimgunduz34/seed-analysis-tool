@@ -1,12 +1,15 @@
 package com.seed.core.calculator;
 
 import com.seed.core.AnalysisContext;
-import com.seed.core.HistoricalData;
-import com.seed.core.ResultKey;
+import com.seed.core.model.Candle;
+import com.seed.core.model.HistoricalData;
+import com.seed.core.model.MetaData;
+import com.seed.core.model.ResultKey;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Mockito;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -18,7 +21,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class PeriodPriceChangeTest {
-    private PeriodPriceChange<DummyCandle> calculator;
+    private PeriodPriceChange<Candle> calculator;
 
     @BeforeEach
     void setUp() {
@@ -52,8 +55,9 @@ class PeriodPriceChangeTest {
             name = "PeriodPriceChangeTest.calculate() : should calculate price change in the period - {0}"
     )
     @MethodSource("getPriceData")
-    void calculateWithFalling(String caseName, List<DummyCandle> priceData, BigDecimal expectedValue) {
-        AnalysisContext<DummyCandle> ctx = new AnalysisContext<>(new HistoricalData<>(priceData));
+    void calculateWithFalling(String caseName, List<Candle> priceData, BigDecimal expectedValue) {
+        MetaData metaData = Mockito.mock(MetaData.class);
+        AnalysisContext<MetaData, Candle> ctx = new AnalysisContext<>(metaData, new HistoricalData<>(priceData));
 
         Map<ResultKey<?>, Object> result = calculator.calculate(ctx);
 

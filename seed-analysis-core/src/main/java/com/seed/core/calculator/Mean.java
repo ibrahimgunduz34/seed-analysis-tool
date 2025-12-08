@@ -1,8 +1,8 @@
 package com.seed.core.calculator;
 
 import com.seed.core.AnalysisContext;
-import com.seed.core.Candle;
-import com.seed.core.ResultKey;
+import com.seed.core.model.Candle;
+import com.seed.core.model.ResultKey;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -12,7 +12,7 @@ import java.util.Optional;
 
 import static com.seed.core.calculator.DailyPriceChange.DAILY_PRICE_CHANGE;
 
-public class Mean<T extends Candle> implements Calculator<T> {
+public class Mean<C extends Candle> implements Calculator<C> {
     public static final ResultKey<BigDecimal> MEAN = ResultKey.of("Mean", BigDecimal.class);
 
     @Override
@@ -26,7 +26,7 @@ public class Mean<T extends Candle> implements Calculator<T> {
     }
 
     @Override
-    public Map<ResultKey<?>, Object> calculate(AnalysisContext<T> ctx) {
+    public Map<ResultKey<?>, Object> calculate(AnalysisContext<?, C> ctx) {
         Optional<List<BigDecimal>> dailyPriceChangesOpt = ctx.get(DAILY_PRICE_CHANGE);
 
         if (dailyPriceChangesOpt.isEmpty()) {
