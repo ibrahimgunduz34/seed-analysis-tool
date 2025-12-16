@@ -1,6 +1,6 @@
 # Tefas Fund Analysis Tool
 
-# How To Use
+## How To Use
 
 * Start the project dependencies running `docker compose up -d` such as Redis and PostgreSQL
 * Run one of the following commands you need.
@@ -11,7 +11,7 @@
 
 ### 1. Synchronization Commands
 
-### MetaDataListSync:
+#### MetaDataListSync:
 
 ```shell
 $ mvn spring-boot:run \
@@ -20,7 +20,7 @@ $ mvn spring-boot:run \
 -Dspring-boot.run.jvmArguments="-Dtask=MetaDataListSync"
 ```
 
-### HistoricalDataListSync:
+#### HistoricalDataListSync:
 
 ```shell
 $ mvn spring-boot:run \
@@ -29,7 +29,7 @@ $ mvn spring-boot:run \
 -Dspring-boot.run.jvmArguments="-Dtask=HistoricalDataListSync"
 ```
 
-### HistoricalDataListSyncAll
+#### HistoricalDataListSyncAll
 
 ```shell
 $ mvn spring-boot:run \
@@ -41,7 +41,7 @@ $ mvn spring-boot:run \
 
 ### 2. Report Commands
 
-### PeriodComparisonReport:
+#### PeriodComparisonReport:
 
 ```shell
 $ mvn spring-boot:run \
@@ -51,9 +51,9 @@ $ mvn spring-boot:run \
 -Dspring-boot.run.arguments="BDS,AFT,MAC,NRC,IVY"
 ```
 
-### PeriodFundTypeComparisonReport:
+#### PeriodFundTypeComparisonReport:
 
-#### Available report options:
+##### Available report options:
 * KARMA_SEMSIYE_FONU
 * KIYMETLI_MADEN_SEMSIYE_FONU
 * KATILIM_SEMSIYE_FONU
@@ -72,7 +72,7 @@ $ mvn spring-boot:run \
 -Dspring-boot.run.arguments="HISSE_SENEDI_SEMSIYE_FONU"
 ```
 
-## Sample Report
+### Sample Report
 ```text
 Analysis Period: 2024-12-16 to 2025-12-16
 ================================================================================================================================================================
