@@ -11,7 +11,7 @@ spring:
           use_second_level_cache: true
           use_query_cache: true
           region:
-            factory_class: org.seed.ExposedRedissonRegionFactory
+            factory_class: com.seed.core.ExposedRedissonRegionFactory
           redisson:
             config: src/main/resources/redisson.yaml
             shutdown_on_session_factory_close: true

@@ -7,25 +7,15 @@
     <groupId>com.seed</groupId>
     <artifactId>seed-analysis</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <modules>
-        <module>seed-analysis-core</module>
-        <module>seed-analysis-app</module>
-        <module>seed-analysis-fund</module>
-        <module>seed-analysis-common</module>
-    </modules>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-<!--        <lombok.version>1.18.38</lombok.version>-->
+
         <spring-boot.version>3.5.7</spring-boot.version>
         <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
-<!--        <mapstruct.version>1.6.3</mapstruct.version>-->
-<!--        <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>-->
-<!--        <mapstruct-processor.version>1.6.3</mapstruct-processor.version>-->
 
         <junit-jupiter.version>6.0.1</junit-jupiter.version>
         <mockito-core.version>5.20.0</mockito-core.version>
@@ -33,78 +23,74 @@
         <postgresql.version>42.7.7</postgresql.version>
         <h2.version>2.3.232</h2.version>
         <asciitable.version>0.3.2</asciitable.version>
+        <redisson.version>3.20.0</redisson.version>
+        <redisson-hibernate-6.version>3.37.0</redisson-hibernate-6.version>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.vandermeer</groupId>
+            <artifactId>asciitable</artifactId>
+            <version>${asciitable.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson</artifactId>
+            <version>${redisson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-hibernate-6</artifactId>
+            <version>${redisson-hibernate-6.version}</version>
+        </dependency>
+
+        <!-- test dependencies -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito-core.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj-core.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
     <dependencyManagement>
         <dependencies>
-            <!-- test dependencies -->
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>seed-analysis-core</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.seed</groupId>
-                <artifactId>seed-analysis-common</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>seed-analysis-fund</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.code.gson</groupId>
-                <artifactId>gson</artifactId>
-                <version>2.11.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.postgresql</groupId>
-                <artifactId>postgresql</artifactId>
-                <version>${postgresql.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.vandermeer</groupId>
-                <artifactId>asciitable</artifactId>
-                <version>${asciitable.version}</version>
-            </dependency>
-
-            <!-- test dependencies -->
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter</artifactId>
-                <version>${junit-jupiter.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-core</artifactId>
-                <version>${mockito-core.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.assertj</groupId>
-                <artifactId>assertj-core</artifactId>
-                <version>${assertj-core.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.h2database</groupId>
-                <artifactId>h2</artifactId>
-                <version>${h2.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-<!--            <dependency>-->
-<!--                <groupId>org.projectlombok</groupId>-->
-<!--                <artifactId>lombok</artifactId>-->
-<!--                <version>${lombok.version}</version>-->
-<!--            </dependency>-->
-<!--            <dependency>-->
-<!--                <groupId>org.mapstruct</groupId>-->
-<!--                <artifactId>mapstruct</artifactId>-->
-<!--                <version>${mapstruct.version}</version>-->
-<!--            </dependency>-->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>

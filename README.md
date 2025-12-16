@@ -9,11 +9,10 @@ additionally.
 ### MetaDataListSync:
 
 ```shell
-$ java \
-  -Dspring.main.web-application-type=none \
-  -Djava.rmi.server.hostname=localhost \
-  -Dtask=MetaDataListSync \
-  -jar target/seed.jar
+$ mvn spring-boot:run \
+-DskipTests=true \
+-Dspring-boot.run.profiles=prod \
+-Dspring-boot.run.jvmArguments="-Dtask=MetaDataListSync"
 ```
 
 ### HistoricalDataListSync:
@@ -29,11 +28,10 @@ $ java \
 ### HistoricalDataListSyncAll
 
 ```shell
-$ java \
-  -Dspring.main.web-application-type=none \
-  -Djava.rmi.server.hostname=localhost \
-  -Dtask=HistoricalDataListSyncAll \
-  -jar target/seed.jar "2025-03-01" "2025-09-02"
+$ mvn spring-boot:run \
+-DskipTests=true \
+-Dspring-boot.run.jvmArguments="-Dtask=HistoricalDataListSyncAll -Dspring.profiles.active=prod" \
+-Dspring-boot.run.arguments="2025-12-01,2025-12-14"
 ```
 
 ### GenerateReport:
