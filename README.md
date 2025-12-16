@@ -89,6 +89,19 @@ NRC    | █░░░░░░░░░░░░░░░░░░░ (Sharpe: 0
 
 ```
 
+## Configuration
+
+You can modify the performance calculation weights from the `performance` object in `src/main/resources/application.yaml` file.
+
+```yaml
+performance:
+  funds:
+    weight:
+      sharpe: 0.4
+      mdd: 0.4
+      return-pct: 0.2
+```
+
 ## Database Operations
 
 To back up the database, run the following command
