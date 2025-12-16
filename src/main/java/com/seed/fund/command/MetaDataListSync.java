@@ -1,10 +1,5 @@
 package com.seed.fund.command;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.stereotype.Component;
 import com.seed.core.DataProvider;
 import com.seed.core.model.ServiceResponse;
 import com.seed.core.storage.MetaDataStorage;
@@ -12,12 +7,18 @@ import com.seed.fund.mapper.MetaDataMapper;
 import com.seed.fund.model.ExternalFundHistoricalData;
 import com.seed.fund.model.ExternalFundMetaData;
 import com.seed.fund.model.FundMetaData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
 @ConditionalOnProperty(name = "task", havingValue = "MetaDataListSync")
-public class MetaDataListSync implements CommandLineRunner {
+public class MetaDataListSync implements ApplicationRunner {
     private final DataProvider<ExternalFundMetaData, ExternalFundHistoricalData> dataProvider;
     private final MetaDataStorage<FundMetaData> metaDataStorage;
     private final MetaDataMapper metaDataMapper;
@@ -33,7 +34,7 @@ public class MetaDataListSync implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(ApplicationArguments args) throws Exception {
         logger.info("Fetching meta data from the provider");
 
         ServiceResponse<List<ExternalFundMetaData>> exported = dataProvider.exportMetaData();
