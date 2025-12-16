@@ -1,10 +1,15 @@
 # Tefas Fund Analysis Tool
 
+# How To Use
+
+* Start the project dependencies running `docker compose up -d` such as Redis and PostgreSQL
+* Run one of the following commands you need.
+
+**Note:** Do not forget to fill the database with initial data and complete the missing metadata and historical data using the synchronization commands specified below. 
 
 ## Commands
 
-You can find the supported commands below. To run the commands for the production environment, just run the commands with `-Dspring.profiles.active=prod` 
-additionally.
+### 1. Synchronization Commands
 
 ### MetaDataListSync:
 
@@ -33,6 +38,8 @@ $ mvn spring-boot:run \
 -Dspring-boot.run.jvmArguments="-Dtask=HistoricalDataListSyncAll" \
 -Dspring-boot.run.arguments="2025-12-01 2025-12-10"
 ```
+
+### 2. Report Commands
 
 ### PeriodComparisonReport:
 
