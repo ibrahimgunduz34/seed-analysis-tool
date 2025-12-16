@@ -88,3 +88,24 @@ IVY    | ██████░░░░░░░░░░░░░░ (Sharpe: 0
 NRC    | █░░░░░░░░░░░░░░░░░░░ (Sharpe: 0.01, MDD: -31.26%, Return: 1.76%)
 
 ```
+
+## Database Operations
+
+To back up the database, run the following command
+
+```shell
+docker run --rm \
+--network container:$(docker compose ps -q pgsql) \
+postgres:17.0 \
+pg_dump -h localhost -U appuser -F c appdb > backup.dump
+```
+
+To restore a backup previously generated, use the following command
+
+```shell
+docker run --rm \
+--network container:$(docker compose ps -q pgsql) \
+-v $(pwd)/backup.dump:/backup.dump \
+postgres:17.0 \
+pg_restore -h localhost -U appuser -d appdb /backup.dump
+```
