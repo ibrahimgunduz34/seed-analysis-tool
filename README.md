@@ -53,6 +53,17 @@ $ mvn spring-boot:run \
 
 ### PeriodFundTypeComparisonReport:
 
+#### Available report options:
+* KARMA_SEMSIYE_FONU
+* KIYMETLI_MADEN_SEMSIYE_FONU
+* KATILIM_SEMSIYE_FONU
+* DEGISKEN_SEMSIYE_FONU
+* SERBEST_SEMSIYE_FONU
+* FON_SEPETI_SEMSIYE_FONU
+* BORCLANMA_ARACLARI_SEMSIYE_FONU
+* HISSE_SENEDI_SEMSIYE_FONU
+* PARA_PIYASASI_SEMSIYE_FONU
+
 ```shell
 $ mvn spring-boot:run \
 -DskipTests=true \
