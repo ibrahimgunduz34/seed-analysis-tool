@@ -36,7 +36,7 @@ $ mvn spring-boot:run \
 -DskipTests=true \
 -Dspring-boot.run.profiles=prod \
 -Dspring-boot.run.jvmArguments="-Dtask=HistoricalDataListSyncAll" \
--Dspring-boot.run.arguments="2025-12-01 2025-12-10"
+-Dspring-boot.run.arguments="2025-12-01 2025-12-19"
 ```
 
 ### 2. Report Commands
@@ -118,7 +118,7 @@ performance:
 To back up the database, run the following command
 
 ```shell
-docker run --rm \
+$ docker run --rm \
 --network container:$(docker compose ps -q pgsql) \
 postgres:17.0 \
 pg_dump -h localhost -U appuser -F c appdb > backup.dump
@@ -134,4 +134,5 @@ postgres:17.0 \
 pg_restore -h localhost -U appuser -d appdb /backup.dump
 ```
 
-## REST API:
+## REST API
+Please check out [the API document](/openapi.yaml)
