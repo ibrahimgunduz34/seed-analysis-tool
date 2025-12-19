@@ -178,6 +178,7 @@ components:
             - -0.0429784086
         performanceRating:
           type: number
+          description: Performance rating computed based on Sharpe ratio, maximum drawdown (MDD), and return. It provides a value on a scale of 0 to 100.
           examples:
             - 1
 
