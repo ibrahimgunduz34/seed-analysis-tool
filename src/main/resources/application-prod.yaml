@@ -13,7 +13,7 @@ spring:
           region:
             factory_class: com.seed.core.ExposedRedissonRegionFactory
           redisson:
-            config: src/main/resources/redisson.yaml
+            config: classpath:redisson.yaml
             shutdown_on_session_factory_close: true
         jdbc:
           batch_size: 1000

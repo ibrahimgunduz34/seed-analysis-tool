@@ -1,5 +1,7 @@
 package com.seed.configuration;
 
+import com.seed.core.BatchAssetAnalyzer;
+import com.seed.core.calculator.Performance;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import com.seed.core.AssetAnalyzer;
@@ -67,6 +69,10 @@ public abstract class AbstractCalculatorConfiguration<M extends MetaData, H exte
         return new StDev<>();
     }
 
+    public Performance<M, H> performance(ReportConfiguration reportConfiguration) {
+        return new Performance<>(reportConfiguration);
+    }
+
     @Bean
     public CalculatorOrchestrator<H> calculatorOrchestrator(
             DailyPriceChange<H> dailyPriceChange,
@@ -92,6 +98,11 @@ public abstract class AbstractCalculatorConfiguration<M extends MetaData, H exte
         ));
     }
 
+    @Bean
+    public Performance<M, H> performanceBatchCalculator(ReportConfiguration configuration) {
+        return new Performance<>(configuration);
+    }
+
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Bean
     public AssetAnalyzer<M, H> assetAnalyzer(CalculatorOrchestrator<H> calculatorOrchestrator,
@@ -102,5 +113,13 @@ public abstract class AbstractCalculatorConfiguration<M extends MetaData, H exte
                 metaDataStorage,
                 historicalData
         );
+    }
+
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    @Bean
+    public BatchAssetAnalyzer<M, H> batchAssetAnalyzer(AssetAnalyzer<M, H> analyzer,
+                                                       Performance<M, H> performanceCalculator,
+                                                       MetaDataStorage<M> metaDataStorage) {
+        return new BatchAssetAnalyzer<>(analyzer, performanceCalculator, metaDataStorage);
     }
 }

@@ -133,3 +133,5 @@ docker run --rm \
 postgres:17.0 \
 pg_restore -h localhost -U appuser -d appdb /backup.dump
 ```
+
+## REST API:

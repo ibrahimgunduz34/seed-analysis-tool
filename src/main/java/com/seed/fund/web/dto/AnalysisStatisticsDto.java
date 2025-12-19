@@ -1,8 +1,8 @@
-package com.seed.core;
+package com.seed.fund.web.dto;
 
 import java.math.BigDecimal;
 
-public record AnalysisStatistics(
+public record AnalysisStatisticsDto(
         BigDecimal priceChange,
         BigDecimal mean,
         Double weightOfPositiveDays,
@@ -14,5 +14,4 @@ public record AnalysisStatistics(
         BigDecimal sharpeRatio,
         BigDecimal sortino,
         Integer performanceRating
-) {
-}
+) {}

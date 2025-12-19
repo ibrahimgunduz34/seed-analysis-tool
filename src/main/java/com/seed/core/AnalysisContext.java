@@ -15,6 +15,7 @@ import static com.seed.core.calculator.GainLoss.AVERAGE_GAIN;
 import static com.seed.core.calculator.GainLoss.AVERAGE_LOSS;
 import static com.seed.core.calculator.Mdd.MDD;
 import static com.seed.core.calculator.Mean.MEAN;
+import static com.seed.core.calculator.Performance.PERFORMANCE_RATING;
 import static com.seed.core.calculator.PeriodPriceChange.PERIOD_PRICE_CHANGE;
 import static com.seed.core.calculator.PositiveNegativeDays.WEIGHT_OF_NEGATIVE_DAYS;
 import static com.seed.core.calculator.PositiveNegativeDays.WEIGHT_OF_POSITIVE_DAYS;
@@ -70,7 +71,8 @@ public class AnalysisContext<M extends MetaData, H extends HistoricalData> {
                 get(MDD).orElse(BigDecimal.valueOf(0)),
                 get(ST_DEV).orElse(BigDecimal.valueOf(0)),
                 get(SHARPE_RATIO).orElse(BigDecimal.valueOf(0)),
-                get(SORTINO).orElse(BigDecimal.valueOf(0))
+                get(SORTINO).orElse(BigDecimal.valueOf(0)),
+                get(PERFORMANCE_RATING).orElse(0)
         );
     }
 

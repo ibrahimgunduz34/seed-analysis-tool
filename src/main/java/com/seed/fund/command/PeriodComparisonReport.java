@@ -2,7 +2,7 @@ package com.seed.fund.command;
 
 import com.seed.configuration.ReportConfiguration;
 import com.seed.core.AnalysisContext;
-import com.seed.core.AssetAnalyzer;
+import com.seed.core.BatchAssetAnalyzer;
 import com.seed.core.printer.CompositePrinter;
 import com.seed.core.printer.InfoTable;
 import com.seed.core.printer.PerformanceChart;
@@ -21,11 +21,12 @@ import java.util.stream.Stream;
 @Component
 @ConditionalOnProperty(name = "task", havingValue = "PeriodComparisonReport")
 public class PeriodComparisonReport implements ApplicationRunner {
-    private final AssetAnalyzer<FundMetaData, FundHistoricalData> assetAnalyzer;
+    private final BatchAssetAnalyzer<FundMetaData, FundHistoricalData> analyzer;
     private final ReportConfiguration reportConfig;
 
-    public PeriodComparisonReport(AssetAnalyzer<FundMetaData, FundHistoricalData> assetAnalyzer, ReportConfiguration reportConfig) {
-        this.assetAnalyzer = assetAnalyzer;
+    public PeriodComparisonReport(BatchAssetAnalyzer<FundMetaData, FundHistoricalData> analyzer,
+                                  ReportConfiguration reportConfig) {
+        this.analyzer = analyzer;
         this.reportConfig = reportConfig;
     }
 
@@ -46,9 +47,7 @@ public class PeriodComparisonReport implements ApplicationRunner {
     }
 
     private void printReport(String[] codes, LocalDate startDate, LocalDate endDate) {
-        List<AnalysisContext<FundMetaData, FundHistoricalData>> contexts = Stream.of(codes)
-                .map(code -> assetAnalyzer.analyze(code, startDate, endDate))
-                .toList();
+        List<AnalysisContext<FundMetaData, FundHistoricalData>> contexts = analyzer.analyze(codes, startDate, endDate);
 
         CompositePrinter printer = new CompositePrinter(
                 new ReportHeader(),

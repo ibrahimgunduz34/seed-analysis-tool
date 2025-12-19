@@ -26,6 +26,10 @@ public class AssetAnalyzer<M extends MetaData, H extends HistoricalData> {
         M metaData = metaDataStorage.getMetaDataByCode(code)
                 .orElseThrow(() -> new NoResourceFoundException("No asset found: " + code));
 
+        return analyze(metaData, startDate, endDate);
+    }
+
+    public AnalysisContext<M, H> analyze(M metaData, LocalDate startDate, LocalDate endDate) {
         if (endDate.isBefore(startDate)) {
             throw new IllegalAccessException("End date should be after start date");
         }
@@ -33,7 +37,7 @@ public class AssetAnalyzer<M extends MetaData, H extends HistoricalData> {
         List<H> historicalData = historicalDataStorage.getHistoricalDataByDateRange(metaData, startDate, endDate);
 
         if (historicalData.isEmpty()) {
-            throw new NoResourceFoundException("No historical data found with the specified data range for: " + code);
+            throw new NoResourceFoundException("No historical data found with the specified data range for: " + metaData.code());
         }
 
         AnalysisContext<M, H> ctx = new AnalysisContext<>(metaData, historicalData, startDate, endDate);

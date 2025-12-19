@@ -1,0 +1,183 @@
+openapi: 3.1.0
+info:
+  title: Seed Analysis Tool
+  description: |
+    A simple fund analysis tool
+  version: 1.0.0
+tags:
+  - name: Funds
+paths:
+  /funds:
+    get:
+      summary: List all available funds with fundamental meta data.
+      tags:
+        - Funds
+      parameters:
+        - name: fundType
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - KARMA_SEMSIYE_FONU
+              - KIYMETLI_MADEN_SEMSIYE_FONU
+              - KATILIM_SEMSIYE_FONU
+              - DEGISKEN_SEMSIYE_FONU
+              - SERBEST_SEMSIYE_FONU
+              - FON_SEPETI_SEMSIYE_FONU
+              - BORCLANMA_ARACLARI_SEMSIYE_FONU
+              - HISSE_SENEDI_SEMSIYE_FONU
+              - PARA_PIYASASI_SEMSIYE_FONU
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FundMetaDataList"
+  /funds/{code}:
+    get:
+      summary: Retrieve a fund details with fundamental meta data.
+      tags:
+        - Funds
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FundMetaData"
+        '404':
+          description: "No resource found"
+
+  /funds/analysis:
+    post:
+      tags:
+        - Funds
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnalysisFundsRequest"
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnalysisResponse"
+
+components:
+  schemas:
+    FundMetaData:
+      type: object
+      properties:
+        code:
+          type: string
+          examples:
+            - "MAC"
+        name:
+          type: string
+          examples:
+            - "MARMARA CAPITAL PORTFÖY HİSSE SENEDİ (TL) FONU (HİSSE SENEDİ YOĞUN FON)"
+        fundType:
+          type: string
+          examples:
+            - "Hisse Senedi Şemsiye Fonu"
+        currency:
+          type: string
+          examples:
+            - "TRY"
+    FundMetaDataList:
+      type: array
+      items:
+        $ref: "#/components/schemas/FundMetaData"
+    AnalysisFundsRequest:
+      type: object
+      required:
+        - codes
+        - startDate
+        - endDate
+      properties:
+        codes:
+          type: array
+          items:
+            type: string
+          examples:
+            - ["MAC","NRC","BDS"]
+        startDate:
+          type: string
+          format: date
+
+        endDate:
+          type: string
+          format: date
+
+        AnalysisOptions:
+          type: object # TODO: To be implemented
+    AnalysisResponse:
+      type: array
+      items:
+        $ref: "#/components/schemas/FundAnalysisResponseItem"
+    FundAnalysisResponseItem:
+      type: object
+      properties:
+        metaData:
+          $ref: "#/components/schemas/FundMetaData"
+        statistics:
+          $ref: "#/components/schemas/AnalysisStatistics"
+    AnalysisStatistics:
+      type: object
+      properties:
+        priceChange:
+          type: number
+          examples:
+            - -0.0508226582
+        mean:
+          type: number
+          examples:
+            - -0.0006730497
+        weightOfPositiveDays:
+          type: number
+          examples:
+            - 0.4444444444444444
+        weightOfNegativeDays:
+          type: number
+          examples:
+            - 0.5555555555555556
+        avgGain:
+          type: number
+          examples:
+            - 0.0139329404
+        avgLoss:
+          type: number
+          examples:
+            - 0.0123770717
+        mdd:
+          type: number
+          examples:
+            - -0.1294419487
+        stDev:
+          type: number
+          examples:
+            - 0.0170118723
+        sharpeRatio:
+          type: number
+          examples:
+            - -0.0395635288
+        sortino:
+          type: number
+          examples:
+            - -0.0429784086
+        performanceRating:
+          type: number
+          examples:
+            - 1
+

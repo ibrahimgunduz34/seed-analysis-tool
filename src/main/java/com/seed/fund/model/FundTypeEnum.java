@@ -1,4 +1,4 @@
-package com.seed.fund.command;
+package com.seed.fund.model;
 
 public enum FundTypeEnum {
     KARMA_SEMSIYE_FONU("Karma Şemsiye Fonu"),

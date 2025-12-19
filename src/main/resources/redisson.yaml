@@ -1,5 +1,5 @@
 singleServerConfig:
-    address: "redis://localhost:6379"
+    address: "redis://${REDIS_HOST:-localhost}:6379"
     database: 0
     timeout: 1000
     retryAttempts: 3
