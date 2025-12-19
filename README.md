@@ -136,3 +136,66 @@ pg_restore -h localhost -U appuser -d appdb /backup.dump
 
 ## REST API
 Please check out [the API document](/openapi.yaml)
+
+## How To Start The Project Locally:
+You can start the application and its required dependencies locally by running the Docker Compose project with the following command:
+```shell
+$ docker compose up -d
+```
+
+### Example usage:
+**Note:** Do not forgot to install `jq` for json formatting.
+
+```shell
+$ curl -XPOST \
+-H "Content-Type:application/json" \
+-d'{"codes": ["MAC", "NRC"], "startDate": "2025-09-01", "endDate": "2025-12-01"}' \
+"http://localhost/funds/analysis" | jq
+```
+
+```json
+[
+  {
+    "metaData": {
+      "code": "MAC",
+      "name": "MARMARA CAPITAL PORTFÖY HİSSE SENEDİ (TL) FONU (HİSSE SENEDİ YOĞUN FON)",
+      "fundType": "Hisse Senedi Şemsiye Fonu",
+      "currency": "TRY"
+    },
+    "statistics": {
+      "priceChange": -0.0331378299,
+      "mean": -0.0004338073,
+      "weightOfPositiveDays": 0.5,
+      "weightOfNegativeDays": 0.5,
+      "avgGain": 0.0096850901,
+      "avgLoss": 0.0105527046,
+      "mdd": -0.0927548934,
+      "stDev": 0.0137388537,
+      "sharpeRatio": -0.0315752180,
+      "sortino": -0.0315693314,
+      "performanceRating": 100
+    }
+  },
+  {
+    "metaData": {
+      "code": "NRC",
+      "name": "NEO PORTFÖY BİRİNCİ DEĞİŞKEN FON",
+      "fundType": "Değişken Şemsiye Fonu",
+      "currency": "TRY"
+    },
+    "statistics": {
+      "priceChange": -0.0508226582,
+      "mean": -0.0006730497,
+      "weightOfPositiveDays": 0.4444444444444444,
+      "weightOfNegativeDays": 0.5555555555555556,
+      "avgGain": 0.0139329404,
+      "avgLoss": 0.0123770717,
+      "mdd": -0.1294419487,
+      "stDev": 0.0170118723,
+      "sharpeRatio": -0.0395635288,
+      "sortino": -0.0429784086,
+      "performanceRating": 1
+    }
+  }
+]
+```
