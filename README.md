@@ -36,7 +36,7 @@ $ mvn spring-boot:run \
 -DskipTests=true \
 -Dspring-boot.run.profiles=prod \
 -Dspring-boot.run.jvmArguments="-Dtask=HistoricalDataListSyncAll" \
--Dspring-boot.run.arguments="2025-12-19 2025-12-23"
+-Dspring-boot.run.arguments="2025-12-22 2025-12-25"
 ```
 
 ### 2. Report Commands
