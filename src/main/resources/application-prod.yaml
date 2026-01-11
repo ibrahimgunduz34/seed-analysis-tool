@@ -10,8 +10,6 @@ spring:
         cache:
           use_second_level_cache: true
           use_query_cache: true
-          region:
-            factory_class: com.seed.core.ExposedRedissonRegionFactory
           redisson:
             shutdown_on_session_factory_close: true
         jdbc:
@@ -22,6 +20,8 @@ spring:
     redis:
       time-to-live: 600000
       cache-null-values: false
+
+
 
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:appdb}?autoReconnect=true&useSSL=false
