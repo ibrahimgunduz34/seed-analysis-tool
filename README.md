@@ -113,26 +113,26 @@ performance:
       return-pct: 0.2
 ```
 
-## Database Operations
+## Scripts:
 
-To back up the database, run the following command
+The scripts are placed under the `/scripts` directory.
 
-```shell
-$ docker run --rm \
---network container:$(docker compose ps -q pgsql) \
-postgres:17.0 \
-pg_dump -h localhost -U appuser -F c appdb > backup.dump
-```
+**build.sh:** build script, builds the application container image
 
-To restore a backup previously generated, use the following command
+**deploy.sh:** Deploy script deploys the previously built image to the local docker swarm instance.
 
-```shell
-docker run --rm \
---network container:$(docker compose ps -q pgsql) \
--v $(pwd)/backup.dump:/backup.dump \
-postgres:17.0 \
-pg_restore -h localhost -U appuser -d appdb /backup.dump
-```
+**createdb.sh:** Createdb script creates an empty application database. This is a useful script especially when you deploy the application from the scratch. You must run this script before restoring the initial data, if you provision a new environment
+
+**dropdb.sh:** Dropdb script removes the application database from the database server hosted in shared infra environment 
+
+**backup.sh:** Backup script creates a backup from the application database hosted in the shared infra service.
+
+**restore.sh:** Restore script restores the backed up database to the database hosted in the shared infra environment.
+
+**sync-daily.sh:** Synchronize fund list and daily fund prices, and re-generate the inital data.
+
+**sync-range.sh:** Synchronize fund list and fund prices for certain date range specified in the script, and re-generate the inital data.
+
 
 ## REST API
 Please check out [the API document](/openapi.yaml)

@@ -1,0 +1,18 @@
+services:
+  app:
+    image: ${IMAGE_NAME}
+    environment:
+      DB_HOST: pgsql
+      DB_PORT: 5432
+      DB_NAME: seed_analysis
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      SPRING_PROFILES_ACTIVE: prod
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    networks:
+      - infra
+
+networks:
+  infra:
+    external: true
