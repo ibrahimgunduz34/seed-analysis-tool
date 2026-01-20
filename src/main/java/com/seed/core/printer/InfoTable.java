@@ -4,9 +4,11 @@ import com.seed.core.AnalysisContext;
 import com.seed.core.AnalysisStatistics;
 import com.seed.core.model.HistoricalData;
 import com.seed.core.model.MetaData;
+import com.seed.core.util.BigDecimalMath;
 import de.vandermeer.asciitable.AT_Context;
 import de.vandermeer.asciitable.AsciiTable;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class InfoTable implements Printer {
@@ -38,16 +40,16 @@ public class InfoTable implements Printer {
 
             asciiTable.addRow(
                     ctx.getMetaData().code(),
-                    String.format("%.2f", statistics.priceChange()),
-                    String.format("%.2f", statistics.mean()),
-                    String.format("%.2f", statistics.weightOfPositiveDays()),
-                    String.format("%.2f", statistics.weightOfNegativeDays()),
-                    String.format("%.2f", statistics.avgGain()),
-                    String.format("%.2f", statistics.avgLoss()),
-                    String.format("%.2f", statistics.mdd()),
-                    String.format("%.2f", statistics.stDev()),
-                    String.format("%.2f", statistics.sharpeRatio()),
-                    String.format("%.2f", statistics.sortino())
+                    String.format("%.2f", statistics.priceChange().multiply(BigDecimal.valueOf(100))),
+                    String.format("%.2f", statistics.mean().multiply(BigDecimal.valueOf(100))),
+                    String.format("%.2f", statistics.weightOfPositiveDays() * 100),
+                    String.format("%.2f", statistics.weightOfNegativeDays() * 100),
+                    String.format("%.2f", statistics.avgGain().multiply(BigDecimal.valueOf(100))),
+                    String.format("%.2f", statistics.avgLoss().multiply(BigDecimal.valueOf(100))),
+                    String.format("%.2f", statistics.mdd().multiply(BigDecimal.valueOf(100))),
+                    String.format("%.2f", BigDecimalMath.convertToAnnual(statistics.stDev())),
+                    String.format("%.2f", BigDecimalMath.convertToAnnual(statistics.sharpeRatio())),
+                    String.format("%.2f", BigDecimalMath.convertToAnnual(statistics.sortino()))
             );
             asciiTable.addRule();
         }

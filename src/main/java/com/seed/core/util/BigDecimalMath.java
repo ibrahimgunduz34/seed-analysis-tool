@@ -31,4 +31,8 @@ public class BigDecimalMath {
     public static double convertToPercentage(BigDecimal value) {
         return value.multiply(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
+
+    public static BigDecimal convertToAnnual(BigDecimal value) {
+        return value.multiply(sqrt(BigDecimal.valueOf(252), 10));
+    }
 }

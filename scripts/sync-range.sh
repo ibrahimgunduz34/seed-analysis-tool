@@ -20,8 +20,8 @@ docker exec -it ${APP_CONTAINER_ID} \
 java -jar /app/seed-analysis.jar \
 --spring.main.web-application-type=none \
 --task=HistoricalDataListSyncAll \
-2026-01-11 \
-2026-01-18
+2026-01-18 \
+2026-01-20
 
 docker run \
 --rm \
