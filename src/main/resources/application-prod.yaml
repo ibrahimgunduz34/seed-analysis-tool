@@ -24,7 +24,7 @@ spring:
 
 
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:appdb}?autoReconnect=true&useSSL=false
-    username: ${DB_USER:appuser}
-    password: ${DB_PASSWORD:apppwd}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:seed_analysis}?autoReconnect=true&useSSL=false
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
