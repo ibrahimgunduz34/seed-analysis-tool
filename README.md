@@ -150,7 +150,7 @@ $ docker compose up -d
 $ curl -XPOST \
 -H "Content-Type:application/json" \
 -d'{"codes": ["MAC", "NRC"], "startDate": "2025-09-01", "endDate": "2025-12-01"}' \
-"http://localhost/funds/analysis" | jq
+"http://localhost:8080/funds/analysis" | jq
 ```
 
 ```json
