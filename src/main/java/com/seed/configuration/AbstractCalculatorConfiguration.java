@@ -1,15 +1,14 @@
 package com.seed.configuration;
 
-import com.seed.core.BatchAssetAnalyzer;
-import com.seed.core.calculator.Performance;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import com.seed.core.AssetAnalyzer;
+import com.seed.core.AssetValidator;
+import com.seed.core.BatchAssetAnalyzer;
 import com.seed.core.CalculatorOrchestrator;
 import com.seed.core.calculator.DailyPriceChange;
 import com.seed.core.calculator.GainLoss;
 import com.seed.core.calculator.Mdd;
 import com.seed.core.calculator.Mean;
+import com.seed.core.calculator.Performance;
 import com.seed.core.calculator.PeriodPriceChange;
 import com.seed.core.calculator.PositiveNegativeDays;
 import com.seed.core.calculator.SharpeRatio;
@@ -19,6 +18,8 @@ import com.seed.core.model.HistoricalData;
 import com.seed.core.model.MetaData;
 import com.seed.core.storage.HistoricalDataStorage;
 import com.seed.core.storage.MetaDataStorage;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
@@ -73,6 +74,12 @@ public abstract class AbstractCalculatorConfiguration<M extends MetaData, H exte
         return new Performance<>(reportConfiguration);
     }
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    @Bean
+    public AssetValidator<M> assetValidator(MetaDataStorage<M> metaDataStorage) {
+        return new AssetValidator<>(metaDataStorage);
+    }
+
     @Bean
     public CalculatorOrchestrator<H> calculatorOrchestrator(
             DailyPriceChange<H> dailyPriceChange,
@@ -115,11 +122,10 @@ public abstract class AbstractCalculatorConfiguration<M extends MetaData, H exte
         );
     }
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Bean
     public BatchAssetAnalyzer<M, H> batchAssetAnalyzer(AssetAnalyzer<M, H> analyzer,
                                                        Performance<M, H> performanceCalculator,
-                                                       MetaDataStorage<M> metaDataStorage) {
-        return new BatchAssetAnalyzer<>(analyzer, performanceCalculator, metaDataStorage);
+                                                       AssetValidator<M> assetValidator) {
+        return new BatchAssetAnalyzer<>(analyzer, performanceCalculator, assetValidator);
     }
 }

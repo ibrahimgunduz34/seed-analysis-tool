@@ -15,27 +15,20 @@ import java.util.stream.Stream;
 public class BatchAssetAnalyzer<M extends MetaData, H extends HistoricalData> {
     private final AssetAnalyzer<M, H> analyzer;
     private final Performance<M, H> performanceRatingCalculator;
-    private final MetaDataStorage<M> metaDataStorage;
+    private final AssetValidator<M> assetValidator;
 
     public BatchAssetAnalyzer(AssetAnalyzer<M, H> analyzer,
                               Performance<M, H> performanceRatingCalculator,
-                              MetaDataStorage<M> metaDataStorage) {
+                              AssetValidator<M> assetValidator) {
         this.analyzer = analyzer;
         this.performanceRatingCalculator = performanceRatingCalculator;
-        this.metaDataStorage = metaDataStorage;
+        this.assetValidator = assetValidator;
     }
 
     public List<AnalysisContext<M, H>> analyze(String[] codes, LocalDate startDate, LocalDate endDate) {
-        List<M> validatedCodes = new ArrayList<>();
-        Stream.of(codes)
-                .forEach(code -> {
-                    Optional<M> metaData = metaDataStorage.getMetaDataByCode(code);
-                    metaData.ifPresentOrElse(validatedCodes::add, () -> {
-                        throw new NoResourceFoundException("No resource found for code " + code);
-                    });
-                });
+        assetValidator.validate(codes);
 
-        List<AnalysisContext<M, H>> contexts = validatedCodes.stream()
+        List<AnalysisContext<M, H>> contexts = Stream.of(codes)
                 .map(metaData -> analyzer.analyze(metaData, startDate, endDate))
                 .toList();
 
