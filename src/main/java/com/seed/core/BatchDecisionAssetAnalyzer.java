@@ -1,10 +1,12 @@
 package com.seed.core;
 
+import com.seed.core.exception.NoResourceFoundException;
 import com.seed.core.model.HistoricalData;
 import com.seed.core.model.MetaData;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 public class BatchDecisionAssetAnalyzer<M extends MetaData, H extends HistoricalData> {
@@ -29,7 +31,21 @@ public class BatchDecisionAssetAnalyzer<M extends MetaData, H extends Historical
 
         return Stream.of(codes)
                 .parallel()
-                .map(code -> analyzer.analyze(code, startDate, endDate))
+                .map(code -> safeAnalyze(code, startDate, endDate))
+                .filter(Objects::nonNull)
                 .toList();
     }
+
+    private AnalysisContext<M, H> safeAnalyze(
+            String code,
+            LocalDate startDate,
+            LocalDate endDate
+    ) {
+        try {
+            return analyzer.analyze(code, startDate, endDate);
+        } catch (NoResourceFoundException e) {
+            return null;
+        }
+    }
+
 }

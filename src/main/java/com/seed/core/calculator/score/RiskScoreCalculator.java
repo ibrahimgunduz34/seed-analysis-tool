@@ -49,7 +49,7 @@ public class RiskScoreCalculator<H extends HistoricalData>
                 0.35 * normVolatility(vol) +
                         0.40 * normMdd(mdd) +
                         0.25 * normSortino(sortino);
-        
+
         int finalScore = clamp((int) Math.round(score * 100.0), 0, 100);
 
         return Map.of(RISK_SCORE, finalScore);

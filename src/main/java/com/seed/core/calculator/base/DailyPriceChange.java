@@ -42,9 +42,15 @@ public class DailyPriceChange<H extends HistoricalData> implements Calculator<H>
         return i -> {
             BigDecimal prev = candles.get(i - 1).price();
             BigDecimal current = candles.get(i).price();
-            if (prev.compareTo(BigDecimal.ZERO) < 0) {
+
+            if (prev.compareTo(BigDecimal.ZERO) <= 0) {
                 return BigDecimal.ZERO;
             }
+
+            if (current.compareTo(BigDecimal.ZERO) <= 0) {
+                return BigDecimal.ZERO;
+            }
+
             return current.subtract(prev)
                     .divide(prev, 10, RoundingMode.HALF_UP);
         };
