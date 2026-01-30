@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.seed.core.calculator.DailyPriceChange.DAILY_PRICE_CHANGE;
+import static com.seed.core.calculator.base.DailyPriceChange.DAILY_PRICE_CHANGE;
 
 public class PositiveNegativeDays<H extends HistoricalData> implements Calculator<H> {
     public static final ResultKey<Integer> NUMBER_OF_POSITIVE_DAYS = ResultKey.of("Number Of Positive Days", Integer.class);

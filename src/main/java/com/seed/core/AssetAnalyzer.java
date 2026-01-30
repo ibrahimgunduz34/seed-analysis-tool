@@ -11,13 +11,13 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class AssetAnalyzer<M extends MetaData, H extends HistoricalData> {
-    private final CalculatorOrchestrator<H> calculatorOrchestrator;
+    private final PipelineOrchestrator<H> pipelineOrchestrator;
     private final HistoricalDataStorage<M, H> historicalDataStorage;
     private final MetaDataStorage<M> metaDataStorage;
 
-    public AssetAnalyzer(CalculatorOrchestrator<H> calculatorOrchestrator,
+    public AssetAnalyzer(PipelineOrchestrator<H> pipelineOrchestrator,
                          MetaDataStorage<M> metaDataStorage, HistoricalDataStorage<M, H> historicalDataStorage) {
-        this.calculatorOrchestrator = calculatorOrchestrator;
+        this.pipelineOrchestrator = pipelineOrchestrator;
         this.metaDataStorage = metaDataStorage;
         this.historicalDataStorage = historicalDataStorage;
     }
@@ -41,7 +41,7 @@ public class AssetAnalyzer<M extends MetaData, H extends HistoricalData> {
         }
 
         AnalysisContext<M, H> ctx = new AnalysisContext<>(metaData, historicalData, startDate, endDate);
-        calculatorOrchestrator.run(ctx);
+        pipelineOrchestrator.run(ctx);
         return ctx;
     }
 }

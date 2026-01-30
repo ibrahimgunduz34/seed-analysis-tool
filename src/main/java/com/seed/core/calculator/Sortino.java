@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.seed.core.calculator.DailyPriceChange.DAILY_PRICE_CHANGE;
+import static com.seed.core.calculator.base.DailyPriceChange.DAILY_PRICE_CHANGE;
 import static com.seed.core.calculator.Mean.MEAN;
 import static com.seed.core.calculator.PositiveNegativeDays.NUMBER_OF_NEGATIVE_DAYS;
 

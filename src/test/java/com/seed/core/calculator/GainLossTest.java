@@ -1,6 +1,7 @@
 package com.seed.core.calculator;
 
 import com.seed.core.AnalysisContext;
+import com.seed.core.calculator.base.DailyPriceChange;
 import com.seed.core.model.HistoricalData;
 import com.seed.core.model.MetaData;
 import com.seed.core.model.ResultKey;

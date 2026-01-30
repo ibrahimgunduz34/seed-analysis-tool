@@ -2,7 +2,7 @@ package com.seed.fund.command;
 
 import com.seed.configuration.ReportConfiguration;
 import com.seed.core.AnalysisContext;
-import com.seed.core.BatchAssetAnalyzer;
+import com.seed.core.BatchSnapshotAssetAnalyzer;
 import com.seed.core.printer.CompositePrinter;
 import com.seed.core.printer.InfoTable;
 import com.seed.core.printer.PerformanceChart;
@@ -23,11 +23,11 @@ import java.util.stream.Stream;
 @Component
 @ConditionalOnProperty(name = "task", havingValue = "PeriodFundTypeComparisonReport")
 public class PeriodFundTypeComparisonReport implements ApplicationRunner {
-    private final BatchAssetAnalyzer<FundMetaData, FundHistoricalData> analyzer;
+    private final BatchSnapshotAssetAnalyzer<FundMetaData, FundHistoricalData> analyzer;
     private final ReportConfiguration reportConfig;
     private final MetaDataStorage<FundMetaData> metaDataStorage;
 
-    public PeriodFundTypeComparisonReport(BatchAssetAnalyzer<FundMetaData, FundHistoricalData> analyzer,
+    public PeriodFundTypeComparisonReport(BatchSnapshotAssetAnalyzer<FundMetaData, FundHistoricalData> analyzer,
                                           ReportConfiguration reportConfig,
                                           MetaDataStorage<FundMetaData> metaDataStorage) {
         this.analyzer = analyzer;

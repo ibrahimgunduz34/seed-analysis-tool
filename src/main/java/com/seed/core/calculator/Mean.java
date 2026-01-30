@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.seed.core.calculator.DailyPriceChange.DAILY_PRICE_CHANGE;
+import static com.seed.core.calculator.base.DailyPriceChange.DAILY_PRICE_CHANGE;
 
 public class Mean<H extends HistoricalData> implements Calculator<H> {
     public static final ResultKey<BigDecimal> MEAN = ResultKey.of("Mean", BigDecimal.class);
