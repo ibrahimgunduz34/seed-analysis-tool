@@ -8,7 +8,10 @@ docker exec -it ${APP_CONTAINER_ID} \
 java -jar /app/seed-analysis.jar \
 --spring.main.web-application-type=none \
 --task=PeriodComparisonReport \
-AFT,BDS,NJR,PIL,PPH,TLY
+TLY
+#MD2,PIL,SKO,IJA
+
+#AFT,BDS,NJR,PIL,PPH,TLY
 
 #MTH,MD1,TLY
 #AAV,ACC,ADP,AEV,AFA,AFS,AFT,AFV,AHI,AK3,AKU,ALC,AOY,\

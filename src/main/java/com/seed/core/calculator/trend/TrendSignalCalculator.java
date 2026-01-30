@@ -35,17 +35,30 @@ public class TrendSignalCalculator<H extends HistoricalData>
     @Override
     public Map<ResultKey<?>, Object> calculate(AnalysisContext<?, H> ctx) {
 
-        BigDecimal ema20 =
-                ctx.get(EMA_20)
-                        .orElseThrow(() -> new IllegalStateException("Missing EMA_20"));
+        BigDecimal ema20 = ctx.get(EMA_20).orElseThrow();
+        BigDecimal ema50 = ctx.get(EMA_50).orElseThrow();
+        BigDecimal ema100 = ctx.get(EMA_100).orElseThrow();
 
-        BigDecimal ema50 =
-                ctx.get(EMA_50)
-                        .orElseThrow(() -> new IllegalStateException("Missing EMA_50"));
+        // 1) Valid data check
+        if (ema20.signum() == 0 || ema50.signum() == 0 || ema100.signum() == 0) {
+            return Map.of(
+                    TREND_SIGNAL, 0,
+                    TREND_LABEL, "INSUFFICIENT_DATA"
+            );
+        }
 
-        BigDecimal ema100 =
-                ctx.get(EMA_100)
-                        .orElseThrow(() -> new IllegalStateException("Missing EMA_100"));
+        // 2) Spread filter
+        double spread20_50 = ema20.subtract(ema50).abs().doubleValue() / ema50.doubleValue();
+        double spread50_100 = ema50.subtract(ema100).abs().doubleValue() / ema100.doubleValue();
+
+        double MIN_SPREAD = 0.002; // %0.2
+
+        if (spread20_50 < MIN_SPREAD && spread50_100 < MIN_SPREAD) {
+            return Map.of(
+                    TREND_SIGNAL, 0,
+                    TREND_LABEL, "SIDEWAYS"
+            );
+        }
 
         int signal;
         String label;
