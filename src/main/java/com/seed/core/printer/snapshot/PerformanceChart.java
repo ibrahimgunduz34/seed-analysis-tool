@@ -1,4 +1,4 @@
-package com.seed.core.printer;
+package com.seed.core.printer.snapshot;
 
 import com.seed.configuration.ReportConfiguration;
 import com.seed.core.AnalysisContext;

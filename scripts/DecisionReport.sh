@@ -7,7 +7,7 @@ export APP_CONTAINER_ID=$(docker inspect ${APP_SERVICE_ID} --format='{{.Status.C
 docker exec -it ${APP_CONTAINER_ID} \
 java -jar /app/seed-analysis.jar \
 --spring.main.web-application-type=none \
---task=PeriodComparisonReport \
+--task=DecisionReport \
 AFT,BDS,NJR,PIL,PPH,TLY
 
 #MTH,MD1,TLY

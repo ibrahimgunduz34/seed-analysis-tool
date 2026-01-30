@@ -19,7 +19,7 @@ public class RollingSharpeCalculator<H extends HistoricalData>
     public static final ResultKey<BigDecimal> SHARPE_3M =
             ResultKey.of("Sharpe.3M", BigDecimal.class);
 
-    private static final double RISK_FREE_RATE = 0.0;
+    private static final BigDecimal MIN_VOL = BigDecimal.valueOf(0.005);
 
     @Override
     public List<ResultKey<?>> requires() {
@@ -46,14 +46,18 @@ public class RollingSharpeCalculator<H extends HistoricalData>
                 ctx.get(VOL_21D)
                         .orElseThrow(() -> new IllegalStateException("Missing VOL_21D"));
 
-        double vol = vol21.doubleValue();
+        double vol = vol21.max(MIN_VOL).doubleValue();
+
         if (vol == 0.0) {
             return Map.of(SHARPE_3M, BigDecimal.ZERO);
         }
 
-        double meanDailyReturn = ret3m.doubleValue() / 63.0;
+        double meanDailyReturn =
+                Math.pow(1.0 + ret3m.doubleValue(), 1.0 / 63.0) - 1.0;
 
-        double sharpe = (meanDailyReturn - RISK_FREE_RATE) / vol;
+        double annualizedReturn = meanDailyReturn * 252;
+
+        double sharpe = annualizedReturn / vol;
 
         return Map.of(SHARPE_3M, BigDecimal.valueOf(sharpe));
     }

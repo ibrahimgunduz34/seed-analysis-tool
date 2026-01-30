@@ -18,6 +18,7 @@ public class RollingVolatilityCalculator<H extends HistoricalData>
             ResultKey.of("Volatility.21D", BigDecimal.class);
 
     private static final int WINDOW = 21;
+    private static final BigDecimal MIN_VOL = BigDecimal.valueOf(0.005);
 
     @Override
     public List<ResultKey<?>> requires() {
@@ -66,6 +67,7 @@ public class RollingVolatilityCalculator<H extends HistoricalData>
 
         double variance = (count > 1) ? (m2 / (count - 1)) : 0.0;
 
-        return BigDecimal.valueOf(Math.sqrt(variance));
+        BigDecimal vol = BigDecimal.valueOf(Math.sqrt(variance) * Math.sqrt(252));
+        return vol.max(MIN_VOL);
     }
 }

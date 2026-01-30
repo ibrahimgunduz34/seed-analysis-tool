@@ -1,6 +1,7 @@
 package com.seed.configuration;
 
-import com.seed.core.AssetAnalyzer;
+import com.seed.core.BatchDecisionAssetAnalyzer;
+import com.seed.core.DecisionAssetAnalyzer;
 import com.seed.core.AssetValidator;
 import com.seed.core.BatchSnapshotAssetAnalyzer;
 import com.seed.core.CalculatorOrchestrator;
@@ -31,6 +32,7 @@ import com.seed.core.calculator.score.RiskScoreCalculator;
 import com.seed.core.calculator.trend.TrendSignalCalculator;
 import com.seed.core.model.HistoricalData;
 import com.seed.core.model.MetaData;
+import com.seed.core.report.ReportService;
 import com.seed.core.storage.HistoricalDataStorage;
 import com.seed.core.storage.MetaDataStorage;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -182,12 +184,12 @@ public abstract class AbstractCalculatorConfiguration<M extends MetaData, H exte
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Bean
-    public AssetAnalyzer<M, H> assetAnalyzer(
+    public DecisionAssetAnalyzer<M, H> assetAnalyzer(
             PipelineOrchestrator<H> pipelineOrchestrator,
             MetaDataStorage<M> metaDataStorage,
             HistoricalDataStorage<M, H> historicalData) {
 
-        return new AssetAnalyzer<>(
+        return new DecisionAssetAnalyzer<>(
                 pipelineOrchestrator,
                 metaDataStorage,
                 historicalData
@@ -208,12 +210,26 @@ public abstract class AbstractCalculatorConfiguration<M extends MetaData, H exte
         );
     }
 
-
-    // TODO: Remove
     @Bean
-    public BatchSnapshotAssetAnalyzer<M, H> batchAssetAnalyzer(AssetAnalyzer<M, H> analyzer,
+    public BatchSnapshotAssetAnalyzer<M, H> batchAssetAnalyzer(SnapshotAnalyzer<M, H> analyzer,
                                                                Performance<M, H> performanceCalculator,
                                                                AssetValidator<M> assetValidator) {
         return new BatchSnapshotAssetAnalyzer<>(analyzer, performanceCalculator, assetValidator);
+    }
+
+    @Bean
+    public ReportService<M, H> reportService(
+            BatchSnapshotAssetAnalyzer<M, H> batchAssetAnalyzer,
+            BatchDecisionAssetAnalyzer<M, H> batchDecisionAssetAnalyzer
+    ) {
+        return new ReportService<>(batchAssetAnalyzer, batchDecisionAssetAnalyzer);
+    }
+
+    @Bean
+    public BatchDecisionAssetAnalyzer<M, H> batchDecisionAssetAnalyzer(
+            DecisionAssetAnalyzer<M, H> analyzer,
+            AssetValidator<M> assetValidator
+    ) {
+        return new BatchDecisionAssetAnalyzer<>(analyzer, assetValidator);
     }
 }

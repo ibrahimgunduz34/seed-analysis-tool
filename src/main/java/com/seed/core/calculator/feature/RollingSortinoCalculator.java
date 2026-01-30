@@ -19,7 +19,7 @@ public class RollingSortinoCalculator<H extends HistoricalData>
             ResultKey.of("Sortino.3M", BigDecimal.class);
 
     private static final int WINDOW = 63;
-    private static final double RISK_FREE_RATE = 0.0;
+    private static final double MIN_VOL = 0.0005;
 
     @Override
     public List<ResultKey<?>> requires() {
@@ -47,14 +47,21 @@ public class RollingSortinoCalculator<H extends HistoricalData>
 
         double downsideVol = rollingDownsideVolatility(dailyReturns, WINDOW);
 
-        if (downsideVol == 0.0) {
+        if (downsideVol <= 0.0) {
             return Map.of(SORTINO_3M, BigDecimal.ZERO);
         }
 
-        double meanDailyReturn = ret3m.doubleValue() / WINDOW;
+        // Annualize downside volatility
+        downsideVol *= Math.sqrt(252);
 
-        double sortino =
-                (meanDailyReturn - RISK_FREE_RATE) / downsideVol;
+        // Geometric mean daily return
+        double meanDailyReturn =
+                Math.pow(1.0 + ret3m.doubleValue(), 1.0 / WINDOW) - 1.0;
+
+        // Annualized return
+        double annualizedReturn = meanDailyReturn * 252;
+
+        double sortino = annualizedReturn / downsideVol;
 
         return Map.of(SORTINO_3M, BigDecimal.valueOf(sortino));
     }
@@ -80,8 +87,8 @@ public class RollingSortinoCalculator<H extends HistoricalData>
             }
         }
 
-        if (count <= 1) {
-            return 0.0;
+        if (count < 5) {
+            return MIN_VOL;
         }
 
         return Math.sqrt(sumSq / (count - 1));

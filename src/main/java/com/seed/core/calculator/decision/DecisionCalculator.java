@@ -66,18 +66,16 @@ public class DecisionCalculator<H extends HistoricalData>
                         .doubleValue();
 
         Decision decision;
-        int confidence;
 
         if (isBuy(finalScore, trend, risk, mdd)) {
             decision = Decision.BUY;
-            confidence = buyConfidence(finalScore, trend, risk, mdd);
         } else if (isSell(finalScore, trend, mdd)) {
             decision = Decision.SELL;
-            confidence = sellConfidence(finalScore, trend, mdd);
         } else {
             decision = Decision.HOLD;
-            confidence = holdConfidence(finalScore, trend, risk, mdd);
         }
+
+        int confidence = computeConfidence(finalScore, trend, risk, mdd, decision);
 
         return Map.of(
                 TRADE_SIGNAL, decision,
@@ -90,56 +88,52 @@ public class DecisionCalculator<H extends HistoricalData>
     private boolean isBuy(int finalScore, int trend, int risk, double mdd) {
         return finalScore >= 75 &&
                 trend >= 1 &&
-                risk >= 60 &&
+                risk >= 55 &&
                 mdd <= 0.18;
     }
 
     private boolean isSell(int finalScore, int trend, double mdd) {
         return finalScore <= 45 ||
                 trend <= -1 ||
-                mdd >= 0.25;
+                mdd >= 0.22;
     }
 
-    /* ---------------- Confidence Functions ---------------- */
+    /* ---------------- Confidence Model ---------------- */
 
-    private int buyConfidence(int finalScore, int trend, int risk, double mdd) {
+    private int computeConfidence(
+            int finalScore,
+            int trend,
+            int risk,
+            double mdd,
+            Decision decision
+    ) {
 
-        double scoreFactor = clamp((finalScore - 75) / 25.0, 0, 1);
-        double trendFactor = clamp((trend + 2) / 4.0, 0, 1);
-        double riskFactor  = clamp((risk - 60) / 40.0, 0, 1);
-        double mddFactor   = clamp((0.18 - mdd) / 0.18, 0, 1);
+        double trendStrength   = clamp((trend + 2) / 4.0, 0, 1);
+        double momentumStrength = clamp(finalScore / 100.0, 0, 1);
+        double riskStability   = clamp(risk / 100.0, 0, 1);
+        double drawdownSafety = clamp(1.0 - (mdd / 0.30), 0, 1);
 
-        double conf =
-                0.35 * scoreFactor +
-                        0.25 * trendFactor +
-                        0.25 * riskFactor +
-                        0.15 * mddFactor;
+        double baseConfidence =
+                0.35 * trendStrength +
+                        0.30 * momentumStrength +
+                        0.20 * riskStability +
+                        0.15 * drawdownSafety;
 
-        return clamp((int) Math.round(conf * 100), 0, 100);
-    }
+        // Decision-specific tuning
+        switch (decision) {
+            case BUY -> baseConfidence *= 1.05;
+            case SELL -> baseConfidence *= 1.10;
+            case HOLD -> baseConfidence *= 0.95;
+        }
 
-    private int sellConfidence(int finalScore, int trend, double mdd) {
+        int confidence = (int) Math.round(baseConfidence * 100);
 
-        double scoreFactor = clamp((45 - finalScore) / 45.0, 0, 1);
-        double trendFactor = clamp((-trend + 2) / 4.0, 0, 1);
-        double mddFactor   = clamp((mdd - 0.18) / 0.20, 0, 1);
+        // Minimum confidence floors
+        if (decision == Decision.BUY)  confidence = Math.max(confidence, 55);
+        if (decision == Decision.SELL) confidence = Math.max(confidence, 60);
+        if (decision == Decision.HOLD) confidence = Math.max(confidence, 45);
 
-        double conf =
-                0.40 * scoreFactor +
-                        0.35 * trendFactor +
-                        0.25 * mddFactor;
-
-        return clamp((int) Math.round(conf * 100), 0, 100);
-    }
-
-    private int holdConfidence(int finalScore, int trend, int risk, double mdd) {
-
-        double neutrality =
-                1.0 - Math.abs(finalScore - 60) / 60.0;
-
-        double conf = clamp(neutrality, 0, 1);
-
-        return clamp((int) Math.round(conf * 100), 0, 100);
+        return clamp(confidence, 0, 100);
     }
 
     /* ---------------- Helpers ---------------- */

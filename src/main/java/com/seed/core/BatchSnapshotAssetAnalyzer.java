@@ -10,12 +10,12 @@ import java.util.stream.Stream;
 
 public class BatchSnapshotAssetAnalyzer<M extends MetaData, H extends HistoricalData> {
 
-    private final AssetAnalyzer<M, H> analyzer;
+    private final SnapshotAnalyzer<M, H> analyzer;
     private final Performance<M, H> performanceRatingCalculator;
     private final AssetValidator<M> assetValidator;
 
     public BatchSnapshotAssetAnalyzer(
-            AssetAnalyzer<M, H> analyzer,
+            SnapshotAnalyzer<M, H> analyzer,
             Performance<M, H> performanceRatingCalculator,
             AssetValidator<M> assetValidator
     ) {
@@ -24,11 +24,7 @@ public class BatchSnapshotAssetAnalyzer<M extends MetaData, H extends Historical
         this.assetValidator = assetValidator;
     }
 
-    public List<AnalysisContext<M, H>> analyze(
-            String[] codes,
-            LocalDate startDate,
-            LocalDate endDate
-    ) {
+    public List<AnalysisContext<M, H>> analyze(String[] codes, LocalDate startDate, LocalDate endDate) {
         assetValidator.validate(codes);
 
         List<AnalysisContext<M, H>> contexts =

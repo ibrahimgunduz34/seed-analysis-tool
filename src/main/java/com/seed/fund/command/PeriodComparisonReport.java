@@ -2,11 +2,11 @@ package com.seed.fund.command;
 
 import com.seed.configuration.ReportConfiguration;
 import com.seed.core.AnalysisContext;
-import com.seed.core.BatchSnapshotAssetAnalyzer;
-import com.seed.core.printer.CompositePrinter;
-import com.seed.core.printer.InfoTable;
-import com.seed.core.printer.PerformanceChart;
-import com.seed.core.printer.ReportHeader;
+import com.seed.core.printer.snapshot.CompositePrinter;
+import com.seed.core.printer.snapshot.InfoTable;
+import com.seed.core.printer.snapshot.PerformanceChart;
+import com.seed.core.printer.snapshot.ReportHeader;
+import com.seed.core.report.ReportService;
 import com.seed.fund.model.FundHistoricalData;
 import com.seed.fund.model.FundMetaData;
 import org.springframework.boot.ApplicationArguments;
@@ -16,17 +16,16 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Stream;
 
 @Component
 @ConditionalOnProperty(name = "task", havingValue = "PeriodComparisonReport")
 public class PeriodComparisonReport implements ApplicationRunner {
-    private final BatchSnapshotAssetAnalyzer<FundMetaData, FundHistoricalData> analyzer;
+    private final ReportService<FundMetaData, FundHistoricalData> reportService;
     private final ReportConfiguration reportConfig;
 
-    public PeriodComparisonReport(BatchSnapshotAssetAnalyzer<FundMetaData, FundHistoricalData> analyzer,
+    public PeriodComparisonReport(ReportService<FundMetaData, FundHistoricalData> reportService,
                                   ReportConfiguration reportConfig) {
-        this.analyzer = analyzer;
+        this.reportService = reportService;
         this.reportConfig = reportConfig;
     }
 
@@ -36,18 +35,13 @@ public class PeriodComparisonReport implements ApplicationRunner {
 
         LocalDate endDate = LocalDate.now();
 
-        Stream<LocalDate> startDates = Stream.of(endDate.minusMonths(1),
-                endDate.minusMonths(3),
-                endDate.minusMonths(6),
-                endDate.minusMonths(12));
-
-        startDates.forEach(startDate -> printReport(codes, startDate, endDate));
+        reportService.generateReportContext(codes, endDate)
+                        .forEach(this::printReport);
 
         System.exit(0);
     }
 
-    private void printReport(String[] codes, LocalDate startDate, LocalDate endDate) {
-        List<AnalysisContext<FundMetaData, FundHistoricalData>> contexts = analyzer.analyze(codes, startDate, endDate);
+    private void printReport(List<AnalysisContext<FundMetaData, FundHistoricalData>> contexts) {
 
         CompositePrinter printer = new CompositePrinter(
                 new ReportHeader(),

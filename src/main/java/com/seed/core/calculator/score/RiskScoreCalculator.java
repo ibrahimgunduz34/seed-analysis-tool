@@ -46,10 +46,10 @@ public class RiskScoreCalculator<H extends HistoricalData>
                 ctx.get(SORTINO_3M).orElse(BigDecimal.ZERO).doubleValue();
 
         double score =
-                0.40 * normVolatility(vol) +
+                0.35 * normVolatility(vol) +
                         0.40 * normMdd(mdd) +
-                        0.20 * normSortino(sortino);
-
+                        0.25 * normSortino(sortino);
+        
         int finalScore = clamp((int) Math.round(score * 100.0), 0, 100);
 
         return Map.of(RISK_SCORE, finalScore);
@@ -63,7 +63,8 @@ public class RiskScoreCalculator<H extends HistoricalData>
      *  4%  → 0.0  (çok riskli)
      */
     private double normVolatility(double v) {
-        return clamp(1.0 - (v / 0.04), 0.0, 1.0);
+        return clamp(1.0 - (v / 0.20), 0.0, 1.0);
+
     }
 
     /**

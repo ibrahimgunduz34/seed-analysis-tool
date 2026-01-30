@@ -58,13 +58,15 @@ public class RollingReturnCalculator<H extends HistoricalData> implements Calcul
     private BigDecimal rollingReturn(List<BigDecimal> daily, int window) {
         int n = daily.size();
 
-        if (n < window) {
+        if (n < 2) {
             return BigDecimal.ZERO;
         }
 
+        int win = Math.min(window, n);
+
         BigDecimal acc = BigDecimal.ONE;
 
-        for (int i = n - window; i < n; i++) {
+        for (int i = n - win; i < n; i++) {
             acc = acc.multiply(
                     BigDecimal.ONE.add(daily.get(i), MC),
                     MC

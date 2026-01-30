@@ -10,13 +10,13 @@ import com.seed.core.storage.MetaDataStorage;
 import java.time.LocalDate;
 import java.util.List;
 
-public class AssetAnalyzer<M extends MetaData, H extends HistoricalData> {
+public class DecisionAssetAnalyzer<M extends MetaData, H extends HistoricalData> {
     private final PipelineOrchestrator<H> pipelineOrchestrator;
     private final HistoricalDataStorage<M, H> historicalDataStorage;
     private final MetaDataStorage<M> metaDataStorage;
 
-    public AssetAnalyzer(PipelineOrchestrator<H> pipelineOrchestrator,
-                         MetaDataStorage<M> metaDataStorage, HistoricalDataStorage<M, H> historicalDataStorage) {
+    public DecisionAssetAnalyzer(PipelineOrchestrator<H> pipelineOrchestrator,
+                                 MetaDataStorage<M> metaDataStorage, HistoricalDataStorage<M, H> historicalDataStorage) {
         this.pipelineOrchestrator = pipelineOrchestrator;
         this.metaDataStorage = metaDataStorage;
         this.historicalDataStorage = historicalDataStorage;
