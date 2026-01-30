@@ -1,0 +1,23 @@
+#!/bin/bash
+
+export APP_SERVICE_ID=$(docker service ps -q --filter "desired-state=running" seed-analysis_app)
+export APP_CONTAINER_ID=$(docker inspect ${APP_SERVICE_ID} --format='{{.Status.ContainerStatus.ContainerID}}')
+
+
+docker exec -it ${APP_CONTAINER_ID} \
+java -jar /app/seed-analysis.jar \
+--spring.main.web-application-type=none \
+--task=DecisionReport \
+AFT,BDS,NJR,PIL,PPH,TLY
+
+#MTH,MD1,TLY
+#AAV,ACC,ADP,AEV,AFA,AFS,AFT,AFV,AHI,AK3,AKU,ALC,AOY,\
+#ARE,ASJ,AYA,BDS,BDY,BFT,BID,BIG,BIH,BIO,BTZ,BUY,DAH,\
+#DHJ,DKH,DLD,DPT,DTL,DXP,DZE,EC2,EID,ELZ,ENJ,FPH,FUA,\
+#FYD,GAE,GAF,GBC,GBG,GHS,GIE,GIH,GKV,GL1,GMR,GO9,GOH,\
+#GSP,GTM,GUH,GZR,HBU,HGM,HKH,HMS,HRZ,HVS,HVZ,ICF,ICZ,\
+#IDH,IFN,IHA,IHK,IHT,IIH,IML,IVF,KHA,KHC,KHJ,KPA,KPC,\
+#KPH,KPU,KST,KTI,KVT,KYA,MAC,MKA,MMH,MPS,MTH,NHY,NNF,\
+#NPH,OHB,OHK,OPH,OPI,PHE,PHI,PPB,RBH,RHS,RPI,SAS,ST1,\
+#TAU,THD,TI2,TI3,TIE,TKF,TLZ,TMG,TTE,TYH,TZD,UPH,\
+#VAY,YAS,YAY,YDI,YEF,YHB,YHK,YHS,YHZ,YLE,YZH,ZHH,ZJL,ZJV,ZLH,ZPE,ZSF,TLH

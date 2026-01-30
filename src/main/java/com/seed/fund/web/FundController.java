@@ -1,6 +1,6 @@
 package com.seed.fund.web;
 
-import com.seed.core.BatchAssetAnalyzer;
+import com.seed.core.BatchSnapshotAssetAnalyzer;
 import com.seed.core.storage.MetaDataStorage;
 import com.seed.fund.model.FundTypeEnum;
 import com.seed.fund.mapper.AnalysisContextMapper;
@@ -28,12 +28,12 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/funds")
 public class FundController {
-    private final BatchAssetAnalyzer<FundMetaData, FundHistoricalData> analyzer;
+    private final BatchSnapshotAssetAnalyzer<FundMetaData, FundHistoricalData> analyzer;
     private final MetaDataStorage<FundMetaData> metaDataStorage;
     private final AnalysisContextMapper analysisContextMapper;
     private final MetaDataMapper metaDataMapper;
 
-    public FundController(BatchAssetAnalyzer<FundMetaData, FundHistoricalData> analyzer,
+    public FundController(BatchSnapshotAssetAnalyzer<FundMetaData, FundHistoricalData> analyzer,
                           MetaDataStorage<FundMetaData> metaDataStorage, AnalysisContextMapper analysisContextMapper,
                           MetaDataMapper metaDataMapper) {
         this.analyzer = analyzer;

@@ -84,3 +84,4 @@ public class AnalysisContext<M extends MetaData, H extends HistoricalData> {
         return endDate;
     }
 }
+

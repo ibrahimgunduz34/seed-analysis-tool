@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.seed.core.calculator.DailyPriceChange.DAILY_PRICE_CHANGE;
+import static com.seed.core.calculator.base.DailyPriceChange.DAILY_PRICE_CHANGE;
 import static com.seed.core.calculator.Mean.MEAN;
 
 public class StDev<H extends HistoricalData> implements Calculator<H> {
