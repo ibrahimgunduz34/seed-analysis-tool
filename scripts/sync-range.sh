@@ -21,7 +21,7 @@ java -jar /app/seed-analysis.jar \
 --spring.main.web-application-type=none \
 --task=HistoricalDataListSyncAll \
 2026-01-20 \
-2026-01-29
+2026-01-30
 
 docker run \
 --rm \
