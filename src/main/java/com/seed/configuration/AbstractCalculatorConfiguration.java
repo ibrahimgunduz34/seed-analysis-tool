@@ -156,9 +156,9 @@ public abstract class AbstractCalculatorConfiguration<M extends MetaData, H exte
     }
 
     @Bean("decisionStage")
-    public CalculatorOrchestrator<H> decisionStage() {
+    public CalculatorOrchestrator<H> decisionStage(DecisionProperties properties) {
         return new CalculatorOrchestrator<>(List.of(
-                new DecisionCalculator<>()
+                new DecisionCalculator<>(properties)
         ));
     }
 

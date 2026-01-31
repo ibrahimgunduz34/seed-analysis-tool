@@ -21,3 +21,33 @@ performance:
       sharpe: 0.4
       mdd: 0.4
       return-pct: 0.2
+
+calculator:
+  decision:
+    thresholds:
+      buy:
+        min-final-score: 75
+        min-trend: 1
+        min-risk: 55
+        max-mdd: 0.18
+      sell:
+        max-final-score: 45
+        max-trend: -1
+        min-mdd: 0.22
+
+    confidence:
+      weights:
+        trend: 0.35
+        momentum: 0.30
+        risk: 0.20
+        drawdown: 0.15
+
+      multipliers:
+        buy: 1.05
+        sell: 1.10
+        hold: 0.95
+
+      floors:
+        buy: 55
+        sell: 60
+        hold: 45

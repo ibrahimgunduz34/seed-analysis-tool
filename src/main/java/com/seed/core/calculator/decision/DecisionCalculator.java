@@ -1,5 +1,6 @@
 package com.seed.core.calculator.decision;
 
+import com.seed.configuration.DecisionProperties;
 import com.seed.core.AnalysisContext;
 import com.seed.core.calculator.Calculator;
 import com.seed.core.model.HistoricalData;
@@ -16,6 +17,12 @@ import static com.seed.core.calculator.trend.TrendSignalCalculator.TREND_SIGNAL;
 
 public class DecisionCalculator<H extends HistoricalData>
         implements Calculator<H> {
+
+    private final DecisionProperties props;
+
+    public DecisionCalculator(DecisionProperties props) {
+        this.props = props;
+    }
 
     public enum Decision {
         BUY, HOLD, SELL
@@ -48,22 +55,10 @@ public class DecisionCalculator<H extends HistoricalData>
     @Override
     public Map<ResultKey<?>, Object> calculate(AnalysisContext<?, H> ctx) {
 
-        int finalScore =
-                ctx.get(FINAL_SCORE)
-                        .orElseThrow(() -> new IllegalStateException("Missing FINAL_SCORE"));
-
-        int trend =
-                ctx.get(TREND_SIGNAL)
-                        .orElseThrow(() -> new IllegalStateException("Missing TREND_SIGNAL"));
-
-        int risk =
-                ctx.get(RISK_SCORE)
-                        .orElseThrow(() -> new IllegalStateException("Missing RISK_SCORE"));
-
-        double mdd =
-                ctx.get(MDD_6M)
-                        .orElse(BigDecimal.ZERO)
-                        .doubleValue();
+        int finalScore = ctx.get(FINAL_SCORE).orElseThrow();
+        int trend      = ctx.get(TREND_SIGNAL).orElseThrow();
+        int risk       = ctx.get(RISK_SCORE).orElseThrow();
+        double mdd     = ctx.get(MDD_6M).orElse(BigDecimal.ZERO).doubleValue();
 
         Decision decision;
 
@@ -86,19 +81,21 @@ public class DecisionCalculator<H extends HistoricalData>
     /* ---------------- Decision Rules ---------------- */
 
     private boolean isBuy(int finalScore, int trend, int risk, double mdd) {
-        return finalScore >= 75 &&
-                trend >= 1 &&
-                risk >= 55 &&
-                mdd <= 0.18;
+        var b = props.thresholds().buy();
+        return finalScore >= b.minFinalScore()
+                && trend >= b.minTrend()
+                && risk >= b.minRisk()
+                && mdd <= b.maxMdd();
     }
 
     private boolean isSell(int finalScore, int trend, double mdd) {
-        return finalScore <= 45 ||
-                trend <= -1 ||
-                mdd >= 0.22;
+        var s = props.thresholds().sell();
+        return finalScore <= s.maxFinalScore()
+                || trend <= s.maxTrend()
+                || mdd >= s.minMdd();
     }
 
-    /* ---------------- Confidence Model ---------------- */
+    /* ---------------- Confidence ---------------- */
 
     private int computeConfidence(
             int finalScore,
@@ -108,30 +105,33 @@ public class DecisionCalculator<H extends HistoricalData>
             Decision decision
     ) {
 
-        double trendStrength   = clamp((trend + 2) / 4.0, 0, 1);
+        var w = props.confidence().weights();
+
+        double trendStrength    = clamp((trend + 2) / 4.0, 0, 1);
         double momentumStrength = clamp(finalScore / 100.0, 0, 1);
-        double riskStability   = clamp(risk / 100.0, 0, 1);
-        double drawdownSafety = clamp(1.0 - (mdd / 0.30), 0, 1);
+        double riskStability    = clamp(risk / 100.0, 0, 1);
+        double drawdownSafety  = clamp(1.0 - (mdd / 0.30), 0, 1);
 
-        double baseConfidence =
-                0.35 * trendStrength +
-                        0.30 * momentumStrength +
-                        0.20 * riskStability +
-                        0.15 * drawdownSafety;
+        double base =
+                w.trend()    * trendStrength +
+                        w.momentum() * momentumStrength +
+                        w.risk()     * riskStability +
+                        w.drawdown() * drawdownSafety;
 
-        // Decision-specific tuning
-        switch (decision) {
-            case BUY -> baseConfidence *= 1.05;
-            case SELL -> baseConfidence *= 1.10;
-            case HOLD -> baseConfidence *= 0.95;
-        }
+        double multiplier = switch (decision) {
+            case BUY  -> props.confidence().multipliers().buy();
+            case SELL -> props.confidence().multipliers().sell();
+            case HOLD -> props.confidence().multipliers().hold();
+        };
 
-        int confidence = (int) Math.round(baseConfidence * 100);
+        int confidence = (int) Math.round(base * multiplier * 100);
 
-        // Minimum confidence floors
-        if (decision == Decision.BUY)  confidence = Math.max(confidence, 55);
-        if (decision == Decision.SELL) confidence = Math.max(confidence, 60);
-        if (decision == Decision.HOLD) confidence = Math.max(confidence, 45);
+        var floors = props.confidence().floors();
+        confidence = switch (decision) {
+            case BUY  -> Math.max(confidence, floors.buy());
+            case SELL -> Math.max(confidence, floors.sell());
+            case HOLD -> Math.max(confidence, floors.hold());
+        };
 
         return clamp(confidence, 0, 100);
     }
